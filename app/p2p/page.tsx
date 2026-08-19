@@ -23,7 +23,7 @@ import { SwitchBanner } from "@/components/layout/SwitchBanner";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/ui/Toast";
 import { offers, p2pOverview, getTrader, wallets } from "@/data/mock/p2p";
-import { announcements } from "@/data/mock/market";
+import { p2pAnnouncements as announcements } from "@/data/mock/p2p";
 import {
   classNames,
   formatAmountInput,
@@ -33,12 +33,12 @@ import {
   parseAmount,
 } from "@/lib/format";
 import { railLabel, RailChip } from "@/lib/rails";
-import { supportWhatsApp, type P2PMethodId } from "@/config/product";
+import { supportWhatsApp, demoAssets, assetInfo, type P2PMethodId, type DemoAssetId } from "@/config/product";
 import type { P2POffer } from "@/types";
 import { Info } from "lucide-react";
 
 type Side = "buy" | "sell";
-type QF = "best_match" | "best_price" | "low_fees" | "fast_response" | "high_completion";
+type QF = "best_match" | "best_price" | "fast_response" | "high_completion";
 
 const methods: (P2PMethodId | "all")[] = ["all", "orange", "mtn", "wave", "bank", "cash"];
 
@@ -51,6 +51,7 @@ function P2PInner() {
   const [side, setSide] = useState<Side>((sp.get("side") as Side) || "buy");
   const [amount, setAmount] = useState("10 000 000");
   const [method, setMethod] = useState<P2PMethodId | "all">("all");
+  const [asset, setAsset] = useState<DemoAssetId>("USDT");
   const [qf, setQf] = useState<QF>("best_match");
   const [loading, setLoading] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -89,8 +90,16 @@ function P2PInner() {
     return xs.slice(0, 12);
   }, [side, method, amountGnf, qf]);
 
+  const a = assetInfo(asset);
+  const assetPrice = (gnf: number) => Math.round(gnf * a.mul * 100) / 100;
+  const fmtAsset = (n: number) =>
+    n.toLocaleString("fr-FR", { maximumFractionDigits: a.decimals });
+  const fmtPrice = (gnf: number) => {
+    const px = assetPrice(gnf);
+    return px >= 1_000_000 ? formatGnfCompact(px, lang).replace(" GNF", "") : formatNumber(px);
+  };
   const bestPrice = rows[0]?.priceGnf ?? 8_640;
-  const receiveUsdt = amountGnf / bestPrice;
+  const receiveAsset = amountGnf / assetPrice(bestPrice);
 
   const refresh = () => {
     setLoading(true);
@@ -102,7 +111,7 @@ function P2PInner() {
 
   const openOrder = (o: P2POffer) => {
     router.push(
-      `/p2p/order/new?offer=${o.id}&amount=${Math.min(Math.max(amountGnf, o.minGnf), o.maxGnf)}`
+      `/p2p/order/new?offer=${o.id}&amount=${Math.min(Math.max(amountGnf, o.minGnf), o.maxGnf)}&asset=${asset}`
     );
   };
 
@@ -122,8 +131,8 @@ function P2PInner() {
           <h1 className="text-xl font-extrabold">P2P Exchange</h1>
           <p className="mt-0.5 text-sm text-ink-muted dark:text-[#8FA79C]">
             {t(
-              "Achetez et vendez des USDT directement avec des pairs vérifiés, aux meilleurs taux.",
-              "Buy and sell USDT directly with verified peers at the best rates."
+              "Achetez et vendez des cryptos (USDT, USDC, BTC) directement avec des pairs vérifiés.",
+              "Buy and sell crypto (USDT, USDC, BTC) directly with verified peers at the best rates."
             )}
           </p>
         </div>
@@ -139,7 +148,7 @@ function P2PInner() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[290px_minmax(0,1fr)] min-[1760px]:grid-cols-[290px_minmax(0,1fr)_300px]">
+      <div className="grid gap-4 lg:grid-cols-[250px_minmax(0,1fr)] min-[1420px]:grid-cols-[250px_minmax(0,1fr)_270px]">
         {/* search card */}
         <div>
           <Card className="card-pad lg:sticky lg:top-[72px]">
@@ -156,7 +165,7 @@ function P2PInner() {
                   aria-selected={side === s}
                   onClick={() => setSide(s)}
                   className={classNames(
-                    "rounded-[7px] px-2 py-1.5 text-xs font-bold transition-colors",
+                    "rounded-[7px] px-2 py-1.5 text-xs font-bold transition-colors max-sm:py-3 max-sm:text-[13px]",
                     side === s
                       ? s === "buy"
                         ? "bg-white text-brand-700 shadow-sm dark:bg-night-card dark:text-brand-200"
@@ -197,14 +206,25 @@ function P2PInner() {
                     ? t("Vous recevez (approx.)", "You receive (approx.)")
                     : t("Vous envoyez (approx.)", "You send (approx.)")}
                 </label>
-                <div className="flex items-center justify-between rounded-control border border-line bg-surface px-3 py-2 dark:border-night-lineStrong dark:bg-night-raised">
-                  <span className="text-sm font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
-                    {receiveUsdt.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}
+                <div className="flex items-center justify-between gap-2 rounded-control border border-line bg-surface py-1 pl-3 pr-1 dark:border-night-lineStrong dark:bg-night-raised">
+                  <span className="min-w-0 truncate text-sm font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
+                    {fmtAsset(receiveAsset)}
                   </span>
-                  <span className="text-xs font-bold text-ink-muted">USDT</span>
+                  <select
+                    aria-label={t("Actif reçu", "Asset received")}
+                    className="shrink-0 rounded-md border border-line bg-white px-1.5 py-1.5 text-xs font-bold dark:border-night-lineStrong dark:bg-night-card"
+                    value={asset}
+                    onChange={(e) => setAsset(e.target.value as DemoAssetId)}
+                  >
+                    {demoAssets.map((x) => (
+                      <option key={x.id} value={x.id}>
+                        {x.id}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <p className="mt-1 text-2xs text-ink-muted dark:text-[#8FA79C]">
-                  {t("Taux", "Rate")} : 1 USDT ≈ {formatNumber(bestPrice)} GNF
+                  {t("Taux", "Rate")} : 1 {asset} ≈ {fmtPrice(bestPrice)} GNF · {a.network}
                 </p>
               </div>
 
@@ -235,8 +255,8 @@ function P2PInner() {
                 onClick={() =>
                   toast(
                     t(
-                      "1) Choisissez une offre · 2) Payez le trader · 3) Les USDT sont libérés après confirmation (protection démo).",
-                      "1) Pick an offer · 2) Pay the trader · 3) USDT is released after confirmation (demo protection)."
+                      "1) Choisissez une offre · 2) Payez le trader · 3) Les cryptos sont libérées après confirmation (protection démo).",
+                      "1) Pick an offer · 2) Pay the trader · 3) Crypto is released after confirmation (demo protection)."
                     ),
                     "info"
                   )
@@ -281,24 +301,21 @@ function P2PInner() {
               <>
                 {/* desktop */}
                 <div className="scroll-x hidden md:block">
-                  <table className="w-full min-w-[760px] text-sm">
+                  <table className="w-full min-w-[540px] text-sm">
                     <thead className="border-b border-line dark:border-night-line">
                       <tr>
                         <th className="th-cell">{t("Trader", "Trader")}</th>
-                        <th className="th-cell">{t("Méthode", "Payment method")}</th>
                         <th className="th-cell">{t("Prix (GNF)", "Price (GNF)")}</th>
                         <th className="th-cell">
-                          {side === "buy" ? t("Vous recevez", "You get") : t("Vous envoyez (USDT)", "You send (USDT)")}
+                          {side === "buy" ? t("Vous recevez", "You get") : `${t("Vous envoyez", "You send")} (${asset})`}
                         </th>
-                        <th className="th-cell">{t("Limites (GNF)", "Limits (GNF)")}</th>
-                        <th className="th-cell">{t("Exécution", "Completion")}</th>
                         <th className="th-cell">{t("Réponse", "Response")}</th>
                         <th className="th-cell" />
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line dark:divide-night-line">
                       {rows.map((o, i) => (
-                        <OfferRow key={o.id} offer={o} amountGnf={amountGnf} highlight={i === 0 && qf === "best_match"} onOpen={() => openOrder(o)} side={side} />
+                        <OfferRow key={o.id} offer={o} amountGnf={amountGnf} highlight={i === 0 && qf === "best_match"} onOpen={() => openOrder(o)} side={side} asset={asset} />
                       ))}
                     </tbody>
                   </table>
@@ -306,7 +323,7 @@ function P2PInner() {
                 {/* mobile */}
                 <ul className="divide-y divide-line md:hidden dark:divide-night-line">
                   {rows.map((o) => (
-                    <OfferCardMobile key={o.id} offer={o} amountGnf={amountGnf} onOpen={() => openOrder(o)} side={side} />
+                    <OfferCardMobile key={o.id} offer={o} amountGnf={amountGnf} onOpen={() => openOrder(o)} side={side} asset={asset} />
                   ))}
                 </ul>
                 <div className="border-t border-line p-3 dark:border-night-line">
@@ -341,8 +358,8 @@ function P2PInner() {
                   Icon: Lock,
                   title: t("Protection Nimba (démo)", "Nimba protection (demo)"),
                   text: t(
-                    "Dans ce prototype, les USDT sont bloqués pendant l'ordre.",
-                    "In this prototype, USDT is locked during the order."
+                    "Dans ce prototype, les cryptos sont bloquées pendant l'ordre.",
+                    "In this prototype, crypto is locked during the order."
                   ),
                 },
                 {
@@ -366,7 +383,7 @@ function P2PInner() {
         </div>
 
         {/* right column */}
-        <div className="hidden space-y-4 min-[1760px]:block">
+        <div className="hidden space-y-4 min-[1420px]:block">
           <Card className="card-pad">
             <div className="flex items-center gap-1.5">
               <h3 className="text-sm font-bold">{t("Aperçu du marché P2P", "P2P market overview")}</h3>
@@ -507,16 +524,21 @@ function OfferRow({
   highlight,
   onOpen,
   side,
+  asset,
 }: {
   offer: P2POffer;
   amountGnf: number;
   highlight: boolean;
   onOpen: () => void;
   side: Side;
+  asset: DemoAssetId;
 }) {
   const { lang, t } = useI18n();
   const tr = getTrader(o.traderId)!;
-  const usdt = amountGnf / o.priceGnf;
+  const a = assetInfo(asset);
+  const px = Math.round(o.priceGnf * a.mul * 100) / 100;
+  const qty = amountGnf / px;
+  const pxLabel = px >= 1_000_000 ? formatGnfCompact(px, lang).replace(" GNF", "") : formatNumber(px);
   return (
     <tr
       className={classNames(
@@ -535,34 +557,27 @@ function OfferRow({
               )}
               {highlight && <Pill tone="green">{t("Meilleur choix", "Best match")}</Pill>}
             </p>
-            <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
+            <p className="flex flex-wrap items-center gap-x-1.5 text-2xs text-ink-muted dark:text-[#8FA79C]">
               {tr.trades.toLocaleString("fr-FR")} {t("trades", "trades")} · {tr.completionPct}%
+              <span>
+                · <RailChip id={o.method} lang={lang} compact />
+              </span>
             </p>
           </div>
         </div>
       </td>
       <td className="td-cell">
-        <RailChip id={o.method} lang={lang} compact />
-      </td>
-      <td className="td-cell">
         <span className="text-[13px] font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
-          {formatNumber(o.priceGnf)}
+          {pxLabel}
         </span>
-        <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{t("par USDT", "per USDT")}</p>
+        <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
+          {t("par", "per")} {asset}
+        </p>
       </td>
       <td className="td-cell font-semibold tabular-nums">
-        {usdt.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} USDT
-      </td>
-      <td className="td-cell text-xs tabular-nums text-ink-secondary dark:text-[#B7C9C0]">
-        {formatGnfCompact(o.minGnf, lang)} – {formatGnfCompact(o.maxGnf, lang)}
-      </td>
-      <td className="td-cell">
-        <div className="min-w-[70px]">
-          <p className="text-xs font-semibold tabular-nums">{tr.completionPct}%</p>
-          <div className="mt-1 h-1 w-full rounded-full bg-line dark:bg-night-lineStrong">
-            <div className="h-1 rounded-full bg-brand-500" style={{ width: `${tr.completionPct}%` }} />
-          </div>
-        </div>
+        {side === "buy"
+          ? `${qty.toLocaleString("fr-FR", { maximumFractionDigits: a.decimals })} ${asset}`
+          : formatGnf(amountGnf)}
       </td>
       <td className="td-cell">
         <span className="inline-flex items-center gap-1 text-xs">
@@ -572,7 +587,7 @@ function OfferRow({
       </td>
       <td className="td-cell text-right">
         <Button size="sm" variant={side === "buy" ? "primary" : "danger"} className="whitespace-nowrap" onClick={onOpen}>
-          {side === "buy" ? t("Acheter", "Buy USDT") : t("Vendre", "Sell USDT")}
+          {side === "buy" ? t("Acheter", `Buy ${asset}`) : t("Vendre", `Sell ${asset}`)}
         </Button>
       </td>
     </tr>
@@ -584,15 +599,20 @@ function OfferCardMobile({
   amountGnf,
   onOpen,
   side,
+  asset,
 }: {
   offer: P2POffer;
   amountGnf: number;
   onOpen: () => void;
   side: Side;
+  asset: DemoAssetId;
 }) {
   const { lang, t } = useI18n();
   const tr = getTrader(o.traderId)!;
-  const usdt = amountGnf / o.priceGnf;
+  const a = assetInfo(asset);
+  const px = Math.round(o.priceGnf * a.mul * 100) / 100;
+  const qty = amountGnf / px;
+  const pxLabel = px >= 1_000_000 ? formatGnfCompact(px, lang).replace(" GNF", "") : formatNumber(px);
   return (
     <li className="p-4">
       <div className="flex items-start gap-3">
@@ -609,11 +629,11 @@ function OfferCardMobile({
           <div className="mt-2 flex items-center justify-between gap-2">
             <div>
               <p className="text-sm font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
-                {formatNumber(o.priceGnf)} <span className="text-2xs font-medium">GNF/USDT</span>
+                {pxLabel} <span className="text-2xs font-medium">GNF/{asset}</span>
               </p>
               <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                 {side === "buy"
-                  ? `≈ ${usdt.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} USDT`
+                  ? `≈ ${qty.toLocaleString("fr-FR", { maximumFractionDigits: a.decimals })} ${asset}`
                   : formatGnf(amountGnf)}{" "}
                 · {tr.responseMinutes} min
               </p>

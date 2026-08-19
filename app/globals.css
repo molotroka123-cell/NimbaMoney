@@ -55,6 +55,7 @@
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-secondary
       transition-colors hover:border-brand-300 hover:text-brand-700
+      max-sm:min-h-[42px] max-sm:px-4 max-sm:text-[13px]
       dark:border-night-lineStrong dark:bg-night-raised dark:text-[#B7C9C0];
   }
   .chip-active {

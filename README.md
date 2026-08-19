@@ -32,7 +32,8 @@ Hub, Matoto Money Point + a generated long tail (22 providers, 21 traders,
    pay → « J'ai payé » → simulated confirmation → USDT released → receipt.
 2. **Marketplace**: `/` → Ouvrir le Marketplace → compare Kaba Trade vs
    Tymur MrSwap → open profile → verification/liquidity/reviews →
-   Demander une liquidité → request timeline `/marketplace/request/REQ-2418`.
+   Demander une liquidité → a new request with a live timeline
+   (`/marketplace/request/new?...`; sample history at `/marketplace/request/REQ-2418`).
 
 ## Getting started
 

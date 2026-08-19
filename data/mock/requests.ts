@@ -51,10 +51,10 @@ export const requests: DealRequest[] = [
     providerId: "p9",
     from: "bank",
     to: "cash",
-    amountGnf: 35_000_000,
-    feePct: 1.7,
-    feeGnf: 595_000,
-    receiveGnf: 34_405_000,
+    amountGnf: 28_000_000,
+    feePct: 1.9,
+    feeGnf: 532_000,
+    receiveGnf: 27_468_000,
     district: "Kaloum",
     status: "cancelled",
     createdAt: "2026-08-14 09:41",
@@ -98,6 +98,30 @@ export const completedDeals: Deal[] = [
     receiptId: "RCP-2026-1102",
   },
 ];
+
+export const req2290: DealRequest = {
+  id: "REQ-2290",
+  providerId: "p1",
+  from: "bank",
+  to: "cash",
+  amountGnf: 8_000_000,
+  feePct: 2.0,
+  feeGnf: 160_000,
+  receiveGnf: 7_840_000,
+  district: "Kaloum",
+  status: "completed",
+  createdAt: "2026-08-05 11:20",
+  etaMinutes: 15,
+  timeline: [
+    { step: "created", at: "11:20", done: true },
+    { step: "accepted", at: "11:22", done: true },
+    { step: "instructions", at: "11:23", done: true },
+    { step: "transfer_confirmed", at: "11:31", done: true },
+    { step: "released", at: "11:45", done: true },
+    { step: "completed", at: "11:48", done: true },
+  ],
+};
+requests.push(req2290);
 
 export function getRequest(id: string): DealRequest | undefined {
   return requests.find((r) => r.id.toLowerCase() === id.toLowerCase());

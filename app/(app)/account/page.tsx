@@ -26,8 +26,8 @@ export default function AccountOverviewPage() {
         />
         <StatsCard
           label={t("Vérification", "Verification")}
-          value={t("Basique", "Basic")}
-          sub={t("Téléphone + e-mail confirmés", "Phone + email confirmed")}
+          value={t("Vérifié", "Verified")}
+          sub={t("Compte de démonstration investisseur", "Investor demo account")}
         />
         <StatsCard
           label={t("Support", "Support")}
@@ -103,13 +103,13 @@ export default function AccountOverviewPage() {
           </div>
           <div>
             <p className="text-sm font-bold">
-              {t("Complétez votre vérification", "Complete your verification")}{" "}
-              <Pill tone="amber">{t("Basique", "Basic")}</Pill>
+              {t("Compte vérifié", "Verified account")}{" "}
+              <Pill tone="green">{t("Démo", "Demo")}</Pill>
             </p>
             <p className="mt-0.5 text-xs text-ink-muted dark:text-[#8FA79C]">
               {t(
-                "Une vérification complète augmente vos limites par transaction.",
-                "Full verification raises your per-deal limits."
+                "Persona de démonstration : Mohamed Diallo. KYC complet simulé pour le prototype investisseur.",
+                "Demo persona: Mohamed Diallo. Simulated full KYC for the investor prototype."
               )}
             </p>
           </div>

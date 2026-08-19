@@ -6,9 +6,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 import { Providers } from "@/components/layout/Providers";
 
 export const metadata: Metadata = {
-  title: "Nimba Money — Marché de liquidité vérifié en Guinée",
+  title: {
+    default: "Nimba Money — P2P Exchange & Marketplace vérifié en Guinée",
+    template: "%s · Nimba Money",
+  },
   description:
-    "Dites-nous quel argent vous avez et ce dont vous avez besoin. Nimba trouve le meilleur partenaire vérifié — frais affichés avant confirmation, règlement direct.",
+    "Un compte, deux façons d'échanger : le P2P Exchange pour trader directement avec des pairs vérifiés, et le Marketplace pour comparer des échangeurs professionnels et fournisseurs de liquidité vérifiés en Guinée.",
 };
 
 export const viewport: Viewport = {

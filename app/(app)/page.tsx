@@ -156,7 +156,15 @@ export default function HomePage() {
                 {lastOrder.amountUsdt.toFixed(2)} USDT
               </p>
               <p className="mt-2">
-                <Pill tone="amber">{t("Paiement en attente", "Payment pending")}</Pill>
+                {lastOrder.status === "completed" ? (
+                  <Pill tone="green">{t("Terminé", "Completed")}</Pill>
+                ) : lastOrder.status === "cancelled" ? (
+                  <Pill tone="neutral">{t("Annulé", "Cancelled")}</Pill>
+                ) : lastOrder.status === "disputed" ? (
+                  <Pill tone="red">{t("En litige", "Disputed")}</Pill>
+                ) : (
+                  <Pill tone="amber">{t("Paiement en attente", "Payment pending")}</Pill>
+                )}
               </p>
             </Card>
           </Link>

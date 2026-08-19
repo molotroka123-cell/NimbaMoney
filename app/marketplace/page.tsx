@@ -164,12 +164,12 @@ function MarketplaceInner() {
         </div>
       </div>
 
-      <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="grid gap-4 min-[1420px]:grid-cols-[minmax(0,1fr)_290px]">
         <div className="min-w-0 space-y-4">
           {/* search */}
           <Card className="card-pad">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-              <div className="lg:col-span-2">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-12">
+              <div className="lg:col-span-3">
                 <label className="label-xs" htmlFor="mk-amount">
                   {t("Vous donnez", "You give")}
                 </label>
@@ -186,7 +186,7 @@ function MarketplaceInner() {
                   </span>
                 </div>
               </div>
-              <div>
+              <div className="lg:col-span-2">
                 <label className="label-xs" htmlFor="mk-receive">
                   {t("Vous recevez", "You receive")}
                 </label>
@@ -203,7 +203,7 @@ function MarketplaceInner() {
                   ))}
                 </select>
               </div>
-              <div>
+              <div className="lg:col-span-3">
                 <label className="label-xs" htmlFor="mk-district">
                   {t("Lieu", "Location")}
                 </label>
@@ -224,7 +224,7 @@ function MarketplaceInner() {
                   ))}
                 </select>
               </div>
-              <div>
+              <div className="lg:col-span-2">
                 <label className="label-xs" htmlFor="mk-type">
                   {t("Type", "Provider type")}
                 </label>
@@ -238,7 +238,7 @@ function MarketplaceInner() {
                   <option value="business">{t("Entreprise vérifiée", "Verified Business")}</option>
                 </select>
               </div>
-              <div className="flex items-end">
+              <div className="flex items-end lg:col-span-2">
                 <Button variant="blue" full onClick={refresh}>
                   <Search className="h-4 w-4" aria-hidden />
                   {t("Rechercher", "Search")}
@@ -289,15 +289,15 @@ function MarketplaceInner() {
               />
             ) : (
               <>
-                <div className="scroll-x hidden md:block">
-                  <table className="w-full min-w-[820px] text-sm">
+                <div className="scroll-x hidden lg:block">
+                  <table className="w-full min-w-[700px] min-[1700px]:min-w-[820px] text-sm">
                     <thead className="border-b border-line dark:border-night-line">
                       <tr>
                         <th className="th-cell">{t("Partenaire", "Provider")}</th>
                         <th className="th-cell">{t("Note", "Rating")}</th>
                         <th className="th-cell">{t("Vérification", "Verification")}</th>
                         <th className="th-cell">{t("Liquidité", "Liquidity")}</th>
-                        <th className="th-cell">{t("Limites (GNF)", "Limits (GNF)")}</th>
+                        <th className="th-cell hidden min-[1700px]:table-cell">{t("Limites (GNF)", "Limits (GNF)")}</th>
                         <th className="th-cell">{t("Réponse", "Response")}</th>
                         <th className="th-cell">{t("Actions", "Actions")}</th>
                       </tr>
@@ -310,7 +310,7 @@ function MarketplaceInner() {
                   </table>
                 </div>
                 {/* mobile cards */}
-                <ul className="divide-y divide-line md:hidden dark:divide-night-line">
+                <ul className="divide-y divide-line lg:hidden dark:divide-night-line">
                   {rows.slice(0, visible).map((p) => (
                     <ProviderCardMobile key={p.id} p={p} onRequest={() => requestDeal(p)} />
                   ))}
@@ -369,7 +369,7 @@ function MarketplaceInner() {
         </div>
 
         {/* right panel */}
-        <div className="hidden space-y-4 2xl:block">
+        <div className="hidden space-y-4 min-[1420px]:block">
           <Card className="card-pad">
             <h3 className="inline-flex items-center gap-1.5 text-sm font-bold">
               <Award className="h-4 w-4 text-mkt-500" aria-hidden />
@@ -578,7 +578,7 @@ function ProviderRow({ p, onRequest }: { p: Provider; onRequest: () => void }) {
       <td className="td-cell">
         <LiquidityBars gnf={p.liquidity.totalAvailableGnf} />
       </td>
-      <td className="td-cell whitespace-nowrap text-xs tabular-nums text-ink-secondary dark:text-[#B7C9C0]">
+      <td className="td-cell hidden whitespace-nowrap text-xs tabular-nums text-ink-secondary min-[1700px]:table-cell dark:text-[#B7C9C0]">
         {formatGnfCompact(p.limits.minGnf, lang).replace(" GNF", "")} –{" "}
         {formatGnfCompact(p.limits.maxGnf, lang).replace(" GNF", "")}
       </td>

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { Card, SectionTitle } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
@@ -68,9 +67,7 @@ export default function AdminDisputesPage() {
                   </div>
                   <p className="mt-0.5 text-xs text-ink-muted dark:text-[#8FA79C]">
                     {lang === "fr" ? reasonLabels[d.reason][0] : reasonLabels[d.reason][1]} ·{" "}
-                    <Link href={`/marketplace/request/${d.requestId}`} className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
-                      {d.requestId}
-                    </Link>{" "}
+                    <span className="font-semibold">{d.requestId}</span>{" "}
                     · {p?.name} · {d.openedAt}
                   </p>
                 </div>

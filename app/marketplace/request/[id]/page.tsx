@@ -419,6 +419,7 @@ function RequestStatusInner() {
         </div>
         <Button
           full
+          variant="blue"
           className="mt-4"
           onClick={() => toast(t("Impression lancée (prototype)", "Printing (prototype)"), "info")}
         >
@@ -520,6 +521,7 @@ function DisputeModal({
         </Button>
         <Button
           full
+          variant="blue"
           disabled={!reason}
           onClick={() => {
             onClose();

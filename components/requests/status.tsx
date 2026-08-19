@@ -16,7 +16,7 @@ export function statusPill(
     accepted: { label: t("Acceptée", "Accepted"), tone: "blue" },
     instructions: { label: t("Instructions envoyées", "Instructions sent"), tone: "amber" },
     transfer_confirmed: { label: t("Transfert confirmé", "Transfer confirmed"), tone: "amber" },
-    released: { label: t("Fonds remis", "Funds released"), tone: "green" },
+    released: { label: t("Fonds remis", "Funds handed over"), tone: "green" },
     completed: { label: t("Terminée", "Completed"), tone: "green" },
     cancelled: { label: t("Annulée", "Cancelled"), tone: "neutral" },
     disputed: { label: t("En litige", "Disputed"), tone: "red" },

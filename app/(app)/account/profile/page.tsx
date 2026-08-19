@@ -15,16 +15,16 @@ export default function ProfilePage() {
       <Card className="card-pad">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-900 text-lg font-bold text-brand-100">
-            TD
+            MO
           </div>
           <div>
-            <p className="text-sm font-bold">Timur Darwaish</p>
+            <p className="text-sm font-bold">Mohamed Diallo</p>
             <p className="text-xs text-ink-muted dark:text-[#8FA79C]">
-              timurdarwaish228@gmail.com · +224 6•• •• •• 28
+              mohamed.demo@nimbamoney.gg · +224 6•• •• •• 22
             </p>
             <p className="mt-1">
-              <Pill tone="amber">
-                {t("Vérification basique", "Basic verification")}
+              <Pill tone="green">
+                {t("Vérifié (démo)", "Verified (demo)")}
               </Pill>
             </p>
           </div>
@@ -36,13 +36,13 @@ export default function ProfilePage() {
           <label className="label-xs" htmlFor="pf-name">
             {t("Nom complet", "Full name")}
           </label>
-          <input id="pf-name" className="input-base" defaultValue="Timur Darwaish" />
+          <input id="pf-name" className="input-base" defaultValue="Mohamed Diallo" />
         </div>
         <div>
           <label className="label-xs" htmlFor="pf-phone">
             {t("Téléphone", "Phone")}
           </label>
-          <input id="pf-phone" className="input-base" defaultValue="+224 620 12 34 28" />
+          <input id="pf-phone" className="input-base" defaultValue="+224 620 12 34 22" />
         </div>
         <div>
           <label className="label-xs" htmlFor="pf-district">

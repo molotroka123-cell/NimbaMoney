@@ -84,7 +84,7 @@ export const opsRequests: OpsRequestRow[] = [
   },
   {
     id: "REQ-2418",
-    customer: "T. Darwaish",
+    customer: "Mohamed D.",
     amountGnf: 10_000_000,
     from: "bank",
     to: "cash",

@@ -38,6 +38,23 @@ export type P2PMethodId = RailId | "wave";
 /** Demo FX reference used by the P2P prototype (GNF per 1 USDT). */
 export const demoUsdtRateGnf = 8_640;
 
+/**
+ * Crypto assets available in the P2P demo. USDT offers are the native
+ * mock data; other assets reuse the same offers through a deterministic
+ * price multiplier — investor-prototype behavior only.
+ */
+export const demoAssets = [
+  { id: "USDT", mul: 1, decimals: 2, network: "Tether · TRC20" },
+  { id: "USDC", mul: 0.9986, decimals: 2, network: "USD Coin · TRC20" },
+  { id: "BTC", mul: 115_180, decimals: 6, network: "Bitcoin" },
+] as const;
+
+export type DemoAssetId = (typeof demoAssets)[number]["id"];
+
+export function assetInfo(id: string) {
+  return demoAssets.find((a) => a.id === id) ?? demoAssets[0];
+}
+
 export const cities = ["Conakry"] as const;
 
 export const districts = [

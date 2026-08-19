@@ -7,7 +7,6 @@ import { Moon, Sun, Menu, ChevronDown } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useToast } from "@/components/ui/Toast";
-import { Button } from "@/components/ui/Button";
 import { classNames } from "@/lib/format";
 
 const links = [

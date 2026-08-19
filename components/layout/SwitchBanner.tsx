@@ -18,7 +18,45 @@ export function SwitchBanner({ current }: { current: "p2p" | "marketplace" }) {
   const p2pActive = current === "p2p";
 
   return (
-    <div className="grid gap-3 lg:grid-cols-2">
+    <>
+      {/* Mobile: compact segmented product switch (~48px) */}
+      <div
+        className="grid grid-cols-2 gap-1 rounded-xl border border-line bg-white p-1 sm:hidden dark:border-night-line dark:bg-night-card"
+        role="tablist"
+        aria-label={t("Choisir un produit", "Choose a product")}
+      >
+        <Link
+          href="/p2p"
+          role="tab"
+          aria-selected={p2pActive}
+          className={classNames(
+            "flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg text-[13px] font-bold transition-colors",
+            p2pActive
+              ? "bg-brand-500 text-white shadow-sm"
+              : "text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-brand-900/40"
+          )}
+        >
+          <Users className="h-4 w-4" aria-hidden />
+          P2P Exchange
+        </Link>
+        <Link
+          href="/marketplace"
+          role="tab"
+          aria-selected={!p2pActive}
+          className={classNames(
+            "flex min-h-[44px] items-center justify-center gap-1.5 rounded-lg text-[13px] font-bold transition-colors",
+            !p2pActive
+              ? "bg-mkt-500 text-white shadow-sm"
+              : "text-mkt-600 hover:bg-mkt-50 dark:text-mkt-300 dark:hover:bg-navy-800/60"
+          )}
+        >
+          <Store className="h-4 w-4" aria-hidden />
+          Marketplace
+        </Link>
+      </div>
+
+      {/* Desktop: two product banner cards */}
+      <div className="hidden gap-3 sm:grid lg:grid-cols-2">
       <div
         className={classNames(
           "card card-pad flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3.5",
@@ -93,5 +131,6 @@ export function SwitchBanner({ current }: { current: "p2p" | "marketplace" }) {
         )}
       </div>
     </div>
+    </>
   );
 }

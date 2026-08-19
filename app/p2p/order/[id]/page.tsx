@@ -22,7 +22,8 @@ import { Pill } from "@/components/ui/Badge";
 import { useI18n } from "@/lib/i18n";
 import { useToast } from "@/components/ui/Toast";
 import { getOrder, getOffer, getTrader, orderChat } from "@/data/mock/p2p";
-import { classNames, formatGnf, formatNumber } from "@/lib/format";
+import { classNames, formatGnf, formatGnfCompact, formatNumber } from "@/lib/format";
+import { assetInfo } from "@/config/product";
 import { railLabel } from "@/lib/rails";
 import type { Message, P2POrder, P2POrderStatus } from "@/types";
 
@@ -38,7 +39,7 @@ const steps: { id: P2POrderStatus; fr: string; en: string }[] = [
   { id: "payment_pending", fr: "Paiement en attente", en: "Payment pending" },
   { id: "payment_sent", fr: "Paiement envoyé", en: "Payment sent" },
   { id: "confirming", fr: "Confirmation du trader", en: "Trader confirmation" },
-  { id: "released", fr: "USDT libérés", en: "Asset release" },
+  { id: "released", fr: "Cryptos libérées", en: "Asset release" },
   { id: "completed", fr: "Terminé", en: "Completed" },
 ];
 
@@ -61,6 +62,7 @@ function OrderInner() {
 
   // Resolve the order: a known mock order, or a synthetic one created
   // from an offer id when the user clicks Buy/Sell in the table.
+  const asset = assetInfo(sp.get("asset") ?? "USDT");
   const base: P2POrder | undefined = useMemo(() => {
     const existing = getOrder(id);
     if (existing) return existing;
@@ -68,14 +70,16 @@ function OrderInner() {
       const offer = getOffer(sp.get("offer") ?? "");
       if (!offer) return undefined;
       const amountGnf = Number(sp.get("amount")) || offer.minGnf;
+      const priceGnf = Math.round(offer.priceGnf * asset.mul * 100) / 100;
+      const q = 10 ** asset.decimals;
       return {
         id: `ORD-${7300 + (offer.id.length * 37) % 90}`,
         offerId: offer.id,
         traderId: offer.traderId,
         side: offer.side,
         amountGnf,
-        priceGnf: offer.priceGnf,
-        amountUsdt: Math.round((amountGnf / offer.priceGnf) * 100) / 100,
+        priceGnf,
+        amountUsdt: Math.round((amountGnf / priceGnf) * q) / q,
         method: offer.method,
         status: "payment_pending",
         createdAt: t("à l'instant", "just now"),
@@ -83,7 +87,7 @@ function OrderInner() {
       };
     }
     return undefined;
-  }, [id, sp, t]);
+  }, [id, sp, t, asset]);
 
   const [status, setStatus] = useState<P2POrderStatus>(base?.status ?? "payment_pending");
   const [chat, setChat] = useState<Message[]>([]);
@@ -91,7 +95,7 @@ function OrderInner() {
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState((base?.deadlineMinutes ?? 15) * 60);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const chatEnd = useRef<HTMLDivElement>(null);
+  const chatBox = useRef<HTMLDivElement>(null);
 
   const trader = base ? getTrader(base.traderId) : undefined;
 
@@ -106,8 +110,8 @@ function OrderInner() {
           threadId: base.id,
           from: "system",
           text: t(
-            `Ordre ${base.id} créé. Protection Nimba (démo) : les USDT du trader sont bloqués jusqu'à la confirmation du paiement.`,
-            `Order ${base.id} created. Nimba protection (demo): the trader's USDT is locked until payment is confirmed.`
+            `Ordre ${base.id} créé. Protection Nimba (démo) : les ${asset.id} du trader sont bloqués jusqu'à la confirmation du paiement.`,
+            `Order ${base.id} created. Nimba protection (demo): the trader's ${asset.id} is locked until payment is confirmed.`
           ),
           at: t("à l'instant", "just now"),
         },
@@ -133,7 +137,8 @@ function OrderInner() {
   }, [status]);
 
   useEffect(() => {
-    chatEnd.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    const el = chatBox.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [chat]);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
@@ -183,15 +188,15 @@ function OrderInner() {
     }, 2500);
     const t2 = setTimeout(() => {
       setStatus("released");
-      pushSystem("Le trader a confirmé. USDT libérés vers votre portefeuille Nimba (démo).", "Trader confirmed. USDT released to your Nimba wallet (demo).");
+      pushSystem(`Le trader a confirmé. ${asset.id} libérés vers votre portefeuille Nimba (démo).`, `Trader confirmed. ${asset.id} released to your Nimba wallet (demo).`);
     }, 5000);
     const t3 = setTimeout(() => {
       setStatus("completed");
       pushSystem("Ordre terminé. Merci d'évaluer votre trader.", "Order completed. Please rate your trader.");
       toast(
         t(
-          `Ordre ${base.id} terminé — ${base.amountUsdt.toLocaleString("fr-FR")} USDT reçus ✅`,
-          `Order ${base.id} completed — received ${base.amountUsdt.toLocaleString("fr-FR")} USDT ✅`
+          `Ordre ${base.id} terminé — ${base.amountUsdt.toLocaleString("fr-FR")} ${asset.id} reçus ✅`,
+          `Order ${base.id} completed — received ${base.amountUsdt.toLocaleString("fr-FR")} ${asset.id} ✅`
         )
       );
     }, 6500);
@@ -231,7 +236,7 @@ function OrderInner() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2.5">
           <h1 className="text-xl font-extrabold">
-            {isBuy ? t("Achat USDT", "Buy USDT") : t("Vente USDT", "Sell USDT")} · {base.id}
+            {isBuy ? `${t("Achat", "Buy")} ${asset.id}` : `${t("Vente", "Sell")} ${asset.id}`} · {base.id}
           </h1>
           {status === "completed" ? (
             <Pill tone="green">{t("Terminé", "Completed")}</Pill>
@@ -269,22 +274,28 @@ function OrderInner() {
               </div>
               <div>
                 <p className="label-xs">{t("Prix", "Price")}</p>
-                <p className="text-base font-extrabold tabular-nums">{formatNumber(base.priceGnf)} GNF</p>
-                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{t("par USDT", "per USDT")}</p>
+                <p className="text-base font-extrabold tabular-nums">
+                  {base.priceGnf >= 1_000_000
+                    ? formatGnfCompact(base.priceGnf, lang)
+                    : `${formatNumber(base.priceGnf)} GNF`}
+                </p>
+                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
+                  {t("par", "per")} {asset.id}
+                </p>
               </div>
               <div>
                 <p className="label-xs">{isBuy ? t("Vous recevez", "You receive") : t("Vous envoyez", "You send")}</p>
                 <p className="text-base font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
-                  {base.amountUsdt.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} USDT
+                  {base.amountUsdt.toLocaleString("fr-FR", { maximumFractionDigits: asset.decimals })} {asset.id}
                 </p>
-                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">Tether · TRC20</p>
+                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{asset.network}</p>
               </div>
             </div>
             <p className="mt-3 flex items-start gap-1.5 rounded-lg bg-brand-50 px-3 py-2 text-2xs text-brand-800 dark:bg-brand-900/50 dark:text-brand-200">
               <Lock className="mt-px h-3 w-3 shrink-0" aria-hidden />
               {t(
-                "Protection Nimba (démo) : les USDT du trader sont bloqués jusqu'à la confirmation du paiement. Fonctionnalité de démonstration du prototype P2P.",
-                "Nimba protection (demo): the trader's USDT is locked until payment is confirmed. Demo functionality of the P2P prototype."
+                `Protection Nimba (démo) : les ${asset.id} du trader sont bloqués jusqu'à la confirmation du paiement. Fonctionnalité de démonstration du prototype P2P.`,
+                `Nimba protection (demo): the trader's ${asset.id} is locked until payment is confirmed. Demo functionality of the P2P prototype.`
               )}
             </p>
           </Card>
@@ -463,7 +474,7 @@ function OrderInner() {
             <div className="border-b border-line px-4 py-2.5 text-xs font-bold dark:border-night-line">
               {t("Chat de l'ordre", "Order chat")}
             </div>
-            <div className="flex-1 space-y-3 overflow-y-auto bg-surface p-3.5 dark:bg-night-bg">
+            <div ref={chatBox} className="flex-1 space-y-3 overflow-y-auto bg-surface p-3.5 dark:bg-night-bg">
               {chat.map((m) =>
                 m.from === "system" ? (
                   <div key={m.id} className="flex justify-center">
@@ -498,7 +509,6 @@ function OrderInner() {
                   </div>
                 )
               )}
-              <div ref={chatEnd} />
             </div>
             <div className="flex items-end gap-2 border-t border-line p-2.5 dark:border-night-line">
               <button
@@ -537,10 +547,10 @@ function OrderInner() {
           <dl className="mt-4 space-y-1.5">
             {[
               [t("Trader", "Trader"), trader.name],
-              [t("Sens", "Side"), isBuy ? t("Achat USDT", "Buy USDT") : t("Vente USDT", "Sell USDT")],
+              [t("Sens", "Side"), isBuy ? `${t("Achat", "Buy")} ${asset.id}` : `${t("Vente", "Sell")} ${asset.id}`],
               [t("Montant", "Amount"), formatGnf(base.amountGnf)],
-              [t("Prix", "Price"), `${formatNumber(base.priceGnf)} GNF/USDT`],
-              ["USDT", `${base.amountUsdt.toLocaleString("fr-FR")} USDT`],
+              [t("Prix", "Price"), `${base.priceGnf >= 1_000_000 ? formatGnfCompact(base.priceGnf, lang) : formatNumber(base.priceGnf) + " GNF"}/${asset.id}`],
+              [asset.id, `${base.amountUsdt.toLocaleString("fr-FR")} ${asset.id}`],
               [t("Moyen", "Method"), railLabel(base.method, lang)],
               [t("Statut", "Status"), t("Terminé", "Completed")],
             ].map(([k, v]) => (

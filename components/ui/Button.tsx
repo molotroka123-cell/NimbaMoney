@@ -28,10 +28,10 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  xs: "px-2.5 py-1 text-xs rounded-md gap-1",
-  sm: "px-3 py-1.5 text-xs rounded-control gap-1.5",
-  md: "px-4 py-2 text-sm rounded-control gap-2",
-  lg: "px-5 py-2.5 text-sm rounded-control gap-2",
+  xs: "px-2.5 py-1 text-xs rounded-md gap-1 max-sm:min-h-[38px] max-sm:px-3",
+  sm: "px-3 py-1.5 text-xs rounded-control gap-1.5 max-sm:min-h-[44px] max-sm:px-4 max-sm:text-sm",
+  md: "px-4 py-2 text-sm rounded-control gap-2 max-sm:min-h-[44px]",
+  lg: "px-5 py-2.5 text-sm rounded-control gap-2 min-h-[46px]",
 };
 
 export function Button({

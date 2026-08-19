@@ -27,7 +27,7 @@ export default function RequestsPage() {
           </p>
         </div>
         <Link href="/marketplace">
-          <Button>
+          <Button variant="blue">
             <Plus className="h-4 w-4" aria-hidden />
             {t("Nouvelle demande", "New request")}
           </Button>

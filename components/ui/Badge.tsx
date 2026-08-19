@@ -34,7 +34,7 @@ export function VerificationBadge({
     <span
       className={classNames(
         "inline-flex items-center gap-1 rounded-full font-semibold whitespace-nowrap",
-        compact ? "px-1.5 py-0.5 text-2xs" : "px-2 py-0.5 text-2xs",
+        compact ? "px-1.5 py-0.5 text-2xs max-sm:text-xs" : "px-2 py-0.5 text-2xs max-sm:text-xs",
         isP2P
           ? "bg-violet-50 text-violet-700 ring-1 ring-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:ring-violet-800"
           : "bg-brand-50 text-brand-800 ring-1 ring-brand-200 dark:bg-brand-900/60 dark:text-brand-200 dark:ring-brand-700"
@@ -94,7 +94,7 @@ export function StatusBadge({ status }: { status: ProviderStatus }) {
   return (
     <span
       className={classNames(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs font-semibold ring-1 whitespace-nowrap",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs font-semibold ring-1 whitespace-nowrap max-sm:text-xs",
         cls
       )}
     >
@@ -127,7 +127,7 @@ export function Pill({
   return (
     <span
       className={classNames(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs font-semibold ring-1 whitespace-nowrap",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-2xs font-semibold ring-1 whitespace-nowrap max-sm:text-xs",
         tones[tone]
       )}
     >

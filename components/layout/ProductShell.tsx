@@ -125,6 +125,12 @@ export function ProductShell({
 
           <div className="ml-auto flex items-center gap-1.5">
             <span
+              className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-2xs font-bold text-amber-800 sm:hidden dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300"
+              title="Investor demo"
+            >
+              {t("Démo", "Demo")}
+            </span>
+            <span
               className="hidden items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-xs font-semibold md:inline-flex dark:border-night-lineStrong"
               title={t("Devise : franc guinéen", "Currency: Guinean franc")}
             >
@@ -159,7 +165,7 @@ export function ProductShell({
               <span className="hidden text-xs font-semibold sm:block">
                 Mohamed
                 <span className={classNames("block text-2xs font-medium", activeTint)}>
-                  {t("Vérifié", "Verified")}
+                  {t("Vérifié · Démo", "Verified · Demo")}
                 </span>
               </span>
             </Link>
@@ -205,27 +211,27 @@ export function ProductShell({
   );
 }
 
-/** Cross-product switch CTA — always visible on both products. */
+/** Compact cross-product switch — the single switch control on product pages. */
 export function ProductSwitcher({ current }: { current: "p2p" | "marketplace" }) {
   const { t } = useI18n();
   if (current === "p2p") {
     return (
-      <Link href="/marketplace" className="hidden sm:block">
+      <Link href="/marketplace" title={t("Besoin d'un échangeur vérifié ?", "Need a verified exchanger?")}>
         <Button variant="blueSecondary" size="sm">
-          {t("Besoin d'un échangeur vérifié ? Ouvrir le Marketplace", "Need a verified exchanger? Open Marketplace")}
+          Marketplace
           <ArrowRight className="h-3.5 w-3.5" aria-hidden />
         </Button>
       </Link>
     );
   }
   return (
-    <Link href="/p2p" className="hidden sm:block">
+    <Link href="/p2p" title={t("Préférez l'échange direct ?", "Prefer direct peer trading?")}>
       <Button
         variant="secondary"
         size="sm"
         className="!text-brand-700 dark:!text-brand-300"
       >
-        {t("Préférez l'échange direct ? Ouvrir le P2P", "Prefer direct peer trading? Open P2P Exchange")}
+        P2P
         <ArrowRight className="h-3.5 w-3.5" aria-hidden />
       </Button>
     </Link>

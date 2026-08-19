@@ -146,7 +146,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7298",
-    offerId: tymurBest.id,
+    offerId: "archived",
     traderId: "t2",
     side: "buy",
     amountGnf: 5_000_000,
@@ -159,7 +159,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7291",
-    offerId: "of-t8-b0",
+    offerId: "archived",
     traderId: "t8",
     side: "buy",
     amountGnf: 1_800_000,
@@ -172,7 +172,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7284",
-    offerId: "of-t4-s0",
+    offerId: "archived",
     traderId: "t4",
     side: "sell",
     amountGnf: 2_580_000,
@@ -185,7 +185,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7277",
-    offerId: "of-t3-b0",
+    offerId: "archived",
     traderId: "t3",
     side: "buy",
     amountGnf: 900_000,
@@ -198,7 +198,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7266",
-    offerId: "of-t12-b0",
+    offerId: "archived",
     traderId: "t12",
     side: "buy",
     amountGnf: 3_200_000,
@@ -211,7 +211,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7259",
-    offerId: "of-t7-s0",
+    offerId: "archived",
     traderId: "t7",
     side: "sell",
     amountGnf: 4_250_000,
@@ -224,7 +224,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7248",
-    offerId: "of-t2-b1",
+    offerId: "archived",
     traderId: "t2",
     side: "buy",
     amountGnf: 7_500_000,
@@ -237,7 +237,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7240",
-    offerId: "of-t16-b0",
+    offerId: "archived",
     traderId: "t16",
     side: "buy",
     amountGnf: 1_200_000,
@@ -250,7 +250,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7233",
-    offerId: "of-t1-s0",
+    offerId: "archived",
     traderId: "t1",
     side: "sell",
     amountGnf: 6_048_000,
@@ -263,7 +263,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7221",
-    offerId: "of-t10-b0",
+    offerId: "archived",
     traderId: "t10",
     side: "buy",
     amountGnf: 650_000,
@@ -276,7 +276,7 @@ export const orders: P2POrder[] = [
   },
   {
     id: "ORD-7215",
-    offerId: "of-t20-b0",
+    offerId: "archived",
     traderId: "t20",
     side: "buy",
     amountGnf: 2_000_000,
@@ -387,6 +387,14 @@ export const p2pOverview = {
   successRate: 98.9,
   trend: [58, 66, 61, 74, 71, 82, 78, 90, 86, 95, 92, 104, 99, 112],
 };
+
+/* ── P2P announcements (green product) ─────────────────────────────── */
+
+export const p2pAnnouncements = [
+  { id: "pa1", fr: "Paiements Wave plus rapides", en: "Faster payouts with Wave", when: "il y a 2 jours", whenEn: "2 days ago" },
+  { id: "pa2", fr: "USDC et BTC disponibles en démo", en: "USDC and BTC available in demo", when: "il y a 3 jours", whenEn: "3 days ago" },
+  { id: "pa3", fr: "Maintenance système terminée", en: "System maintenance completed", when: "il y a 5 jours", whenEn: "5 days ago" },
+];
 
 /* ── Wallets (demo) ────────────────────────────────────────────────── */
 
