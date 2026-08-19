@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    @apply antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  }
+  body {
+    @apply bg-surface text-ink dark:bg-night-bg dark:text-[#E6EFEA] text-sm;
+  }
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+  /* Accessible focus ring everywhere */
+  :focus-visible {
+    outline: 2px solid #008a58;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-card border border-line bg-surface-card shadow-card dark:border-night-line dark:bg-night-card;
+  }
+  .card-pad {
+    @apply p-4;
+  }
+  .input-base {
+    @apply w-full rounded-control border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-faint
+      focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20
+      dark:border-night-lineStrong dark:bg-night-raised dark:text-[#E6EFEA];
+  }
+  .label-xs {
+    @apply mb-1 block text-2xs font-semibold uppercase tracking-wide text-ink-muted dark:text-[#8FA79C];
+  }
+  .th-cell {
+    @apply px-3 py-2 text-left text-2xs font-semibold uppercase tracking-wider text-ink-muted dark:text-[#8FA79C];
+  }
+  .td-cell {
+    @apply px-3 py-3 align-middle;
+  }
+  .table-row-hover {
+    @apply transition-colors hover:bg-brand-50/60 dark:hover:bg-night-raised;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink-secondary
+      transition-colors hover:border-brand-300 hover:text-brand-700
+      dark:border-night-lineStrong dark:bg-night-raised dark:text-[#B7C9C0];
+  }
+  .chip-active {
+    @apply border-brand-500 bg-brand-50 text-brand-800 dark:border-brand-400 dark:bg-brand-900/60 dark:text-brand-200;
+  }
+  .scroll-x {
+    @apply overflow-x-auto;
+    scrollbar-width: thin;
+  }
+}
+
+/* Thin scrollbars in webkit */
+.scroll-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-x::-webkit-scrollbar-thumb {
+  background: #cbd5d0;
+  border-radius: 3px;
+}
+.dark .scroll-x::-webkit-scrollbar-thumb {
+  background: #2a4a3d;
+}
