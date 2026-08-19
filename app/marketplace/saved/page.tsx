@@ -18,7 +18,8 @@ export default function SavedProvidersPage() {
 
   if (list.length === 0) {
     return (
-      <div className="p-4 lg:p-6">
+      <div className="space-y-3 p-4 lg:p-6">
+      <h1 className="text-xl font-extrabold">{t("Partenaires enregistrés", "Saved providers")}</h1>
       <Card>
         <EmptyState
           title={t("Aucun partenaire enregistré.", "No saved providers yet.")}
@@ -41,6 +42,7 @@ export default function SavedProvidersPage() {
 
   return (
     <div className="space-y-3 p-4 lg:p-6">
+      <h1 className="text-xl font-extrabold">{t("Partenaires enregistrés", "Saved providers")}</h1>
       {list.map((p) => (
         <Card key={p.id} className="card-pad">
           <div className="flex flex-wrap items-center gap-3">

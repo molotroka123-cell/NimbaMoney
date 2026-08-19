@@ -105,7 +105,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
             <Menu className="h-5 w-5" />
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold">{t("Espace partenaire", "Provider dashboard")}</span>
+            <h1 className="text-sm font-bold">{t("Espace partenaire", "Provider dashboard")}</h1>
             <Pill tone="green">{t("En ligne", "Online")}</Pill>
           </div>
           <div className="ml-auto flex items-center gap-2">

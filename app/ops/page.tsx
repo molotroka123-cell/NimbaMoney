@@ -55,7 +55,7 @@ export default function OpsPage() {
       {/* minimal ops header */}
       <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b border-line bg-brand-950 px-4 text-white">
         <RadioTower className="h-4 w-4 text-brand-300" aria-hidden />
-        <span className="text-sm font-bold">NIMBA OPS</span>
+        <h1 className="text-sm font-bold">NIMBA OPS</h1>
         <span className="text-2xs text-brand-200/60">
           {t("Dispatch · Conakry · pilote", "Dispatch · Conakry · pilot")}
         </span>

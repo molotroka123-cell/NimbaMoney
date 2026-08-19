@@ -101,7 +101,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="text-sm font-bold">{t("Administration", "Admin")}</span>
+          <h1 className="text-sm font-bold">{t("Administration", "Admin")}</h1>
           <span className="text-2xs text-ink-muted dark:text-[#8FA79C]">admin.fode</span>
           <div className="ml-auto flex items-center gap-2">
             <Link href="/ops">
