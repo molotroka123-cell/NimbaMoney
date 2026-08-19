@@ -28,7 +28,7 @@ export default function SavedProvidersPage() {
             ),
           ]}
           action={
-            <Link href="/providers">
+            <Link href="/marketplace/providers">
               <Button variant="secondary">{t("Parcourir l'annuaire", "Browse the directory")}</Button>
             </Link>
           }
@@ -45,7 +45,7 @@ export default function SavedProvidersPage() {
             <Avatar initials={p.logoInitials} hue={p.logoHue} />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-1.5">
-                <Link href={`/providers/${p.slug}`} className="text-[13px] font-bold hover:text-brand-600">
+                <Link href={`/marketplace/providers/${p.slug}`} className="text-[13px] font-bold hover:text-brand-600">
                   {p.name}
                 </Link>
                 <VerificationBadge type={p.type} level={p.verification.level} compact />
@@ -67,7 +67,7 @@ export default function SavedProvidersPage() {
               <Bookmark className="h-3.5 w-3.5 fill-brand-500 text-brand-500" aria-hidden />
               {t("Retirer", "Remove")}
             </Button>
-            <Link href={`/providers/${p.slug}`}>
+            <Link href={`/marketplace/providers/${p.slug}`}>
               <Button variant="secondary" size="sm">
                 {t("Profil", "Profile")}
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden />

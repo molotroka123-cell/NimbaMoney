@@ -7,11 +7,11 @@ import {
   Smartphone,
   type LucideIcon,
 } from "lucide-react";
-import type { RailId } from "@/config/product";
+import type { RailId, P2PMethodId } from "@/config/product";
 import type { Lang } from "@/types";
 
 export const railMeta: Record<
-  RailId,
+  P2PMethodId,
   { fr: string; en: string; icon: LucideIcon; tint: string }
 > = {
   cash: {
@@ -38,9 +38,16 @@ export const railMeta: Record<
     icon: Smartphone,
     tint: "text-yellow-600 dark:text-yellow-300",
   },
+  // P2P-only rail
+  wave: {
+    fr: "Wave",
+    en: "Wave",
+    icon: Smartphone,
+    tint: "text-sky-600 dark:text-sky-300",
+  },
 };
 
-export function railLabel(id: RailId, lang: Lang): string {
+export function railLabel(id: P2PMethodId, lang: Lang): string {
   return lang === "fr" ? railMeta[id].fr : railMeta[id].en;
 }
 
@@ -49,7 +56,7 @@ export function RailChip({
   lang,
   compact,
 }: {
-  id: RailId;
+  id: P2PMethodId;
   lang: Lang;
   compact?: boolean;
 }) {

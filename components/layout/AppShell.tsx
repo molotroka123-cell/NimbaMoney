@@ -5,18 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
-  Search,
   Store,
-  FileText,
-  Handshake,
   MessageSquare,
-  Bookmark,
   User,
   LifeBuoy,
   Briefcase,
   LayoutDashboard,
   X,
   Users,
+  BadgeCheck,
+  RadioTower,
+  ShieldCheck,
 } from "lucide-react";
 import {
   BrandBlock,
@@ -27,7 +26,6 @@ import {
 import { TopNav } from "@/components/layout/TopNav";
 import { useI18n } from "@/lib/i18n";
 import { threads } from "@/data/mock/messages";
-import { enableTier2P2P } from "@/config/product";
 import { classNames } from "@/lib/format";
 
 const unread = threads.reduce((n, th) => n + th.unread, 0);
@@ -36,15 +34,10 @@ const sections: NavSection[] = [
   {
     items: [
       { href: "/", labelFr: "Accueil", labelEn: "Home", icon: Home, exact: true },
-      { href: "/find", labelFr: "Trouver de la liquidité", labelEn: "Find liquidity", icon: Search },
-      { href: "/providers", labelFr: "Partenaires d'échange", labelEn: "Exchange providers", icon: Store },
-      ...(enableTier2P2P
-        ? [{ href: "/p2p", labelFr: "P2P vérifié", labelEn: "Verified P2P", icon: Users }]
-        : []),
-      { href: "/requests", labelFr: "Demandes", labelEn: "Requests", icon: FileText },
-      { href: "/account", labelFr: "Mes transactions", labelEn: "My deals", icon: Handshake },
+      { href: "/p2p", labelFr: "Échange P2P", labelEn: "P2P Exchange", icon: Users },
+      { href: "/marketplace", labelFr: "Marketplace", labelEn: "Marketplace", icon: Store },
       { href: "/messages", labelFr: "Messages", labelEn: "Messages", icon: MessageSquare, badge: unread },
-      { href: "/account/saved", labelFr: "Partenaires enregistrés", labelEn: "Saved providers", icon: Bookmark },
+      { href: "/verification", labelFr: "Vérification", labelEn: "Verification", icon: BadgeCheck },
       { href: "/account/profile", labelFr: "Profil", labelEn: "Profile", icon: User },
       { href: "/account/support", labelFr: "Support", labelEn: "Support", icon: LifeBuoy },
     ],
@@ -57,12 +50,20 @@ const sections: NavSection[] = [
       { href: "/partner", labelFr: "Tableau de bord partenaire", labelEn: "Provider dashboard", icon: LayoutDashboard },
     ],
   },
+  {
+    titleFr: "Interne (démo)",
+    titleEn: "Internal (demo)",
+    items: [
+      { href: "/ops", labelFr: "Ops / Dispatch", labelEn: "Ops / Dispatch", icon: RadioTower },
+      { href: "/admin", labelFr: "Console admin", labelEn: "Admin console", icon: ShieldCheck },
+    ],
+  },
 ];
 
 const mobileTabs = [
   { href: "/", fr: "Accueil", en: "Home", icon: Home, exact: true },
-  { href: "/find", fr: "Trouver", en: "Find", icon: Search },
-  { href: "/requests", fr: "Demandes", en: "Requests", icon: FileText },
+  { href: "/p2p", fr: "P2P", en: "P2P", icon: Users },
+  { href: "/marketplace", fr: "Marketplace", en: "Marketplace", icon: Store },
   { href: "/messages", fr: "Messages", en: "Messages", icon: MessageSquare },
   { href: "/account", fr: "Compte", en: "Account", icon: User },
 ];
@@ -77,8 +78,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="rounded-br-[28px] bg-brand-950/40">
         <BrandBlock
           subtitle={t(
-            "Marché de liquidité vérifié — Guinée",
-            "Verified Liquidity Marketplace — Guinée"
+            "P2P & Marketplace fintech — Guinée",
+            "P2P & Fintech Marketplace — Guinea"
           )}
         />
       </div>

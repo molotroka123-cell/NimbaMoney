@@ -8,7 +8,7 @@ import { classNames } from "@/lib/format";
 
 const tabs = [
   { href: "/account", fr: "Aperçu", en: "Overview", exact: true },
-  { href: "/requests", fr: "Mes demandes", en: "My requests" },
+  { href: "/marketplace/requests", fr: "Mes demandes", en: "My requests" },
   { href: "/account/deals", fr: "Transactions", en: "Completed deals" },
   { href: "/messages", fr: "Messages", en: "Messages" },
   { href: "/account/saved", fr: "Partenaires enregistrés", en: "Saved providers" },

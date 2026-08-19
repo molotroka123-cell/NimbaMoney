@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
+import { notFound, useParams, useSearchParams } from "next/navigation";
 import {
   MessageSquare,
   Upload,
@@ -26,7 +26,7 @@ import { getRequest } from "@/data/mock/requests";
 import { getProviderById } from "@/data/mock/providers";
 import { classNames, formatGnf } from "@/lib/format";
 import { railLabel } from "@/lib/rails";
-import type { DisputeReason, RequestStatus } from "@/types";
+import type { DealRequest, DisputeReason, RequestStatus } from "@/types";
 
 const stepLabels: Record<RequestStatus, [string, string]> = {
   created: ["Demande créée", "Request created"],
@@ -39,25 +39,126 @@ const stepLabels: Record<RequestStatus, [string, string]> = {
   disputed: ["En litige", "Disputed"],
 };
 
-export default function RequestStatusPage() {
+function RequestStatusInner() {
   const { id } = useParams<{ id: string }>();
+  const sp = useSearchParams();
   const { lang, t } = useI18n();
   const { toast } = useToast();
-  const request = getRequest(id);
+
+  // A known mock request, or a synthetic one created live from the
+  // provider/service the user actually selected in the modal.
+  const request: DealRequest | undefined = useMemo(() => {
+    const existing = getRequest(id);
+    if (existing) return existing;
+    if (id !== "new") return undefined;
+    const provider = getProviderById(sp.get("provider") ?? "");
+    if (!provider) return undefined;
+    const service =
+      provider.services.find((s) => s.id === sp.get("service")) ?? provider.services[0];
+    const amountGnf = Math.min(
+      Math.max(Number(sp.get("amount")) || service.minGnf, service.minGnf),
+      service.maxGnf
+    );
+    const feeGnf = Math.round((amountGnf * service.feePct) / 100);
+    return {
+      id: `REQ-${2500 + ((provider.id.length * 53 + service.id.length * 17) % 90)}`,
+      providerId: provider.id,
+      from: service.from,
+      to: service.to,
+      amountGnf,
+      feePct: service.feePct,
+      feeGnf,
+      receiveGnf: amountGnf - feeGnf,
+      district: provider.locations[0].district,
+      status: "created",
+      createdAt: t("à l'instant", "just now"),
+      etaMinutes: service.estimatedMinutes[1],
+      timeline: [
+        { step: "created", at: t("à l'instant", "just now"), done: true },
+        { step: "accepted", done: false },
+        { step: "instructions", done: false },
+        { step: "transfer_confirmed", done: false },
+        { step: "released", done: false },
+        { step: "completed", done: false },
+      ],
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, sp]);
+
+  const isSynthetic = id === "new";
+  const [overrides, setOverrides] = useState<Partial<Record<RequestStatus, boolean>>>({});
+  const [cancelled, setCancelled] = useState(false);
   const [transferSent, setTransferSent] = useState(false);
   const [disputeOpen, setDisputeOpen] = useState(false);
   const [receiptOpen, setReceiptOpen] = useState(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  // Simulated provider acceptance for freshly created requests.
+  useEffect(() => {
+    if (!isSynthetic || !request) return;
+    const t1 = setTimeout(() => {
+      setOverrides((o) => ({ ...o, accepted: true }));
+      toast(t("Le partenaire a accepté votre demande ✓", "The provider accepted your request ✓"));
+    }, 2200);
+    const t2 = setTimeout(() => {
+      setOverrides((o) => ({ ...o, instructions: true }));
+      toast(t("Instructions de règlement reçues", "Settlement instructions received"), "info");
+    }, 4200);
+    timers.current.push(t1, t2);
+    return () => timers.current.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSynthetic, request?.id]);
 
   if (!request) return notFound();
   const r = request;
   const p = getProviderById(r.providerId)!;
-  const doneCount = r.timeline.filter((s) => s.done).length + (transferSent ? 1 : 0);
-  const active = r.status !== "completed" && r.status !== "cancelled";
+
+  const stepDone = (step: RequestStatus, mockDone: boolean) =>
+    mockDone ||
+    !!overrides[step] ||
+    (transferSent && step === "transfer_confirmed");
+
+  const currentStatus: RequestStatus = cancelled
+    ? "cancelled"
+    : overrides.completed
+      ? "completed"
+      : overrides.released
+        ? "released"
+        : transferSent
+          ? "transfer_confirmed"
+          : overrides.instructions
+            ? "instructions"
+            : overrides.accepted
+              ? "accepted"
+              : r.status;
+
+  const completedNow = currentStatus === "completed";
+  const active = !["completed", "cancelled"].includes(currentStatus);
+  const canMarkSent = ["instructions"].includes(currentStatus);
+
+  const markTransferSent = () => {
+    setTransferSent(true);
+    toast(
+      t(
+        "Transfert marqué comme envoyé. Le partenaire vérifie.",
+        "Transfer marked as sent. The provider is verifying."
+      )
+    );
+    const t1 = setTimeout(() => {
+      setOverrides((o) => ({ ...o, released: true }));
+      toast(t("Le partenaire a remis les fonds ✓", "The provider released the funds ✓"));
+    }, 2600);
+    const t2 = setTimeout(() => {
+      setOverrides((o) => ({ ...o, completed: true }));
+      toast(t("Transaction terminée — reçu disponible 🎉", "Deal completed — receipt available 🎉"));
+    }, 4200);
+    timers.current.push(t1, t2);
+  };
 
   return (
     <div className="space-y-4 p-4 lg:p-6">
       <nav className="text-2xs text-ink-muted dark:text-[#8FA79C]" aria-label="Breadcrumb">
-        <Link href="/requests" className="hover:text-brand-600">
+        <Link href="/marketplace/requests" className="hover:text-mkt-600">
           {t("Demandes", "Requests")}
         </Link>{" "}
         / <span className="font-semibold text-ink dark:text-white">{r.id}</span>
@@ -66,7 +167,7 @@ export default function RequestStatusPage() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-extrabold">{r.id}</h1>
-          {statusPill(transferSent && r.status === "instructions" ? "transfer_confirmed" : r.status, t)}
+          {statusPill(currentStatus, t)}
         </div>
         <p className="text-xs text-ink-muted dark:text-[#8FA79C]">
           {t("Créée le", "Created")} {r.createdAt} ·{" "}
@@ -81,19 +182,17 @@ export default function RequestStatusPage() {
             <h2 className="text-sm font-bold">{t("Suivi de la transaction", "Deal timeline")}</h2>
             <ol className="mt-4 space-y-0">
               {r.timeline.map((s, i) => {
-                const done = s.done || (transferSent && s.step === "transfer_confirmed");
+                const done = stepDone(s.step, s.done);
                 const isNext =
                   !done &&
-                  r.timeline.findIndex(
-                    (x) => !(x.done || (transferSent && x.step === "transfer_confirmed"))
-                  ) === i;
+                  r.timeline.findIndex((x) => !stepDone(x.step, x.done)) === i;
                 return (
                   <li key={s.step} className="relative flex gap-3 pb-5 last:pb-0">
                     {i < r.timeline.length - 1 && (
                       <span
                         className={classNames(
                           "absolute left-[11px] top-6 h-full w-0.5",
-                          done ? "bg-brand-500" : "bg-line dark:bg-night-lineStrong"
+                          done ? "bg-mkt-500" : "bg-line dark:bg-night-lineStrong"
                         )}
                         aria-hidden
                       />
@@ -102,9 +201,9 @@ export default function RequestStatusPage() {
                       className={classNames(
                         "relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-2xs font-bold",
                         done
-                          ? "bg-brand-500 text-white"
+                          ? "bg-mkt-500 text-white"
                           : isNext
-                            ? "bg-white ring-2 ring-brand-500 text-brand-600 dark:bg-night-card"
+                            ? "bg-white ring-2 ring-mkt-500 text-mkt-600 dark:bg-night-card"
                             : "bg-surface-sunken text-ink-faint dark:bg-night-raised"
                       )}
                     >
@@ -119,7 +218,7 @@ export default function RequestStatusPage() {
                       >
                         {lang === "fr" ? stepLabels[s.step][0] : stepLabels[s.step][1]}
                       </p>
-                      {(s.at || (transferSent && s.step === "transfer_confirmed")) && (
+                      {(s.at || done) && (
                         <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                           {s.at ?? t("à l'instant", "just now")}
                         </p>
@@ -127,8 +226,8 @@ export default function RequestStatusPage() {
                       {isNext && s.step === "transfer_confirmed" && (
                         <p className="mt-1 rounded-lg bg-amber-50 px-2.5 py-1.5 text-2xs text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">
                           {t(
-                            "Effectuez le virement avec la référence REQ-2418, puis marquez-le comme envoyé.",
-                            "Send the transfer with reference REQ-2418, then mark it as sent."
+                            `Effectuez le virement avec la référence ${r.id}, puis marquez-le comme envoyé.`,
+                            `Send the transfer with reference ${r.id}, then mark it as sent.`
                           )}
                         </p>
                       )}
@@ -144,7 +243,7 @@ export default function RequestStatusPage() {
             <Card className="card-pad">
               <h2 className="text-sm font-bold">{t("Actions", "Actions")}</h2>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Link href="/messages">
+                <Link href="/marketplace/messages">
                   <Button variant="secondary" size="sm">
                     <MessageSquare className="h-3.5 w-3.5" aria-hidden />
                     {t("Contacter le partenaire", "Message provider")}
@@ -162,16 +261,9 @@ export default function RequestStatusPage() {
                 </Button>
                 <Button
                   size="sm"
-                  disabled={transferSent}
-                  onClick={() => {
-                    setTransferSent(true);
-                    toast(
-                      t(
-                        "Transfert marqué comme envoyé. Le partenaire va vérifier.",
-                        "Transfer marked as sent. The provider will verify."
-                      )
-                    );
-                  }}
+                  variant="blue"
+                  disabled={transferSent || !canMarkSent}
+                  onClick={markTransferSent}
                 >
                   <Send className="h-3.5 w-3.5" aria-hidden />
                   {transferSent
@@ -205,15 +297,20 @@ export default function RequestStatusPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() =>
-                    toast(
-                      t(
-                        "Annulation impossible : le partenaire a déjà accepté. Contactez le support.",
-                        "Cannot cancel: the provider already accepted. Contact support."
-                      ),
-                      "warn"
-                    )
-                  }
+                  onClick={() => {
+                    if (currentStatus === "created") {
+                      setCancelled(true);
+                      toast(t("Demande annulée.", "Request cancelled."), "warn");
+                    } else {
+                      toast(
+                        t(
+                          "Annulation impossible : le partenaire a déjà accepté. Contactez le support.",
+                          "Cannot cancel: the provider already accepted. Contact support."
+                        ),
+                        "warn"
+                      );
+                    }
+                  }}
                 >
                   <XCircle className="h-3.5 w-3.5" aria-hidden />
                   {t("Annuler si éligible", "Cancel if eligible")}
@@ -222,13 +319,13 @@ export default function RequestStatusPage() {
             </Card>
           )}
 
-          {r.status === "completed" && (
+          {completedNow && (
             <Card className="card-pad">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h2 className="text-sm font-bold">{t("Reçu", "Receipt")}</h2>
                   <p className="mt-0.5 text-xs text-ink-muted dark:text-[#8FA79C]">
-                    RCP-2026-1187 ·{" "}
+                    {r.id === "REQ-2395" ? "RCP-2026-1187" : r.id.replace("REQ", "RCP")} ·{" "}
                     {t("archivé et vérifiable", "archived and verifiable")}
                   </p>
                 </div>
@@ -249,8 +346,8 @@ export default function RequestStatusPage() {
               <Avatar initials={p.logoInitials} hue={p.logoHue} size="lg" />
               <div>
                 <Link
-                  href={`/providers/${p.slug}`}
-                  className="text-[13px] font-bold hover:text-brand-600"
+                  href={`/marketplace/providers/${p.slug}`}
+                  className="text-[13px] font-bold hover:text-mkt-600"
                 >
                   {p.name}
                 </Link>
@@ -299,11 +396,12 @@ export default function RequestStatusPage() {
             NIMBA MONEY
           </p>
           <p className="text-center text-2xs text-ink-muted dark:text-[#8FA79C]">
-            {t("Reçu de transaction enregistrée", "Logged deal receipt")} · RCP-2026-1187
+            {t("Reçu de transaction enregistrée", "Logged deal receipt")} ·{" "}
+            {r.id === "REQ-2395" ? "RCP-2026-1187" : r.id.replace("REQ", "RCP")}
           </p>
           <dl className="mt-4 space-y-1.5">
             {[
-              [t("Client", "Customer"), "T. Darwaish"],
+              [t("Client", "Customer"), "Mohamed D."],
               [t("Partenaire", "Provider"), p.name],
               [t("Méthode", "Method"), `${railLabel(r.from, lang)} → ${railLabel(r.to, lang)}`],
               [t("Montant", "Amount"), formatGnf(r.amountGnf)],
@@ -329,6 +427,14 @@ export default function RequestStatusPage() {
         </Button>
       </Modal>
     </div>
+  );
+}
+
+export default function RequestStatusPage() {
+  return (
+    <Suspense>
+      <RequestStatusInner />
+    </Suspense>
   );
 }
 
@@ -372,14 +478,14 @@ function DisputeModal({
                 className={classNames(
                   "flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2 text-xs font-medium",
                   reason === rn.id
-                    ? "border-brand-500 bg-brand-50 dark:bg-brand-900/50"
+                    ? "border-mkt-500 bg-mkt-50 dark:bg-navy-800"
                     : "border-line dark:border-night-line"
                 )}
               >
                 <input
                   type="radio"
                   name="dispute-reason"
-                  className="accent-brand-500"
+                  className="accent-mkt-500"
                   checked={reason === rn.id}
                   onChange={() => setReason(rn.id)}
                 />

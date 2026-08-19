@@ -43,7 +43,7 @@ export function FeeBreakdown({
       <div className="border-t border-line pt-2 dark:border-night-lineStrong">
         <div className="flex justify-between">
           <dt className="font-bold">{t("Vous recevez", "You receive")}</dt>
-          <dd className="text-base font-extrabold tabular-nums text-brand-600 dark:text-brand-300">
+          <dd className="text-base font-extrabold tabular-nums text-mkt-600 dark:text-mkt-300">
             {formatGnf(receiveGnf)}
           </dd>
         </div>
@@ -75,7 +75,7 @@ export function CreateRequestModal({
 
   const submit = () => {
     setSubmitting(true);
-    // Prototype: the demo request REQ-2418 plays the live status flow.
+    // A synthetic request is created live for the provider/service selected.
     setTimeout(() => {
       toast(
         t(
@@ -83,7 +83,9 @@ export function CreateRequestModal({
           "Request created. The provider has been notified."
         )
       );
-      router.push("/requests/REQ-2418");
+      router.push(
+        `/marketplace/request/new?provider=${provider.id}&service=${service.id}&amount=${amountGnf}`
+      );
     }, 600);
   };
 
@@ -135,11 +137,11 @@ export function CreateRequestModal({
 
         <div className="flex items-center justify-between text-xs text-ink-secondary dark:text-[#B7C9C0]">
           <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5 text-brand-500" aria-hidden />
+            <MapPin className="h-3.5 w-3.5 text-mkt-500" aria-hidden />
             {loc.district}, {loc.city}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5 text-brand-500" aria-hidden />
+            <Clock className="h-3.5 w-3.5 text-mkt-500" aria-hidden />
             {t(
               `Disponible sous ~${service.estimatedMinutes[1]} min`,
               `Available in ~${service.estimatedMinutes[1]} min`
@@ -152,7 +154,7 @@ export function CreateRequestModal({
             type="checkbox"
             checked={accepted}
             onChange={(e) => setAccepted(e.target.checked)}
-            className="mt-0.5 h-4 w-4 accent-brand-500"
+            className="mt-0.5 h-4 w-4 accent-mkt-500"
           />
           <span>
             {t(
@@ -162,7 +164,7 @@ export function CreateRequestModal({
           </span>
         </label>
 
-        <Button full size="lg" disabled={!accepted || submitting} onClick={submit}>
+        <Button full size="lg" variant="blue" disabled={!accepted || submitting} onClick={submit}>
           {submitting
             ? t("Création…", "Creating…")
             : t("Créer la demande", "Create request")}

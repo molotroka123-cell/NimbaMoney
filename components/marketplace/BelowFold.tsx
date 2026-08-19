@@ -81,7 +81,7 @@ export function TopProviders() {
         )}
         right={
           <Link
-            href="/providers"
+            href="/marketplace/providers"
             className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-300"
           >
             {t("Voir l'annuaire", "View directory")}
@@ -91,7 +91,7 @@ export function TopProviders() {
       />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {top.map((p) => (
-          <Link key={p.id} href={`/providers/${p.slug}`}>
+          <Link key={p.id} href={`/marketplace/providers/${p.slug}`}>
             <Card className="card-pad h-full transition-shadow hover:shadow-raised">
               <div className="flex items-center gap-2.5">
                 <Avatar initials={p.logoInitials} hue={p.logoHue} />
@@ -170,8 +170,8 @@ export function Footer() {
     {
       title: t("Produit", "Product"),
       links: [
-        { href: "/find", label: t("Trouver de la liquidité", "Find liquidity") },
-        { href: "/providers", label: t("Partenaires vérifiés", "Verified providers") },
+        { href: "/marketplace", label: t("Marketplace vérifié", "Verified Marketplace") },
+        { href: "/p2p", label: t("Échange P2P", "P2P Exchange") },
         { href: "/verification", label: t("Vérification", "Verification") },
       ],
     },

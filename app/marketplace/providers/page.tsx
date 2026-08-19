@@ -292,8 +292,8 @@ function ProviderDirectoryCard({
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-1.5">
               <Link
-                href={`/providers/${p.slug}`}
-                className="text-sm font-bold hover:text-brand-600"
+                href={`/marketplace/providers/${p.slug}`}
+                className="text-sm font-bold hover:text-mkt-600"
               >
                 {p.name}
               </Link>
@@ -365,13 +365,14 @@ function ProviderDirectoryCard({
 
         {/* actions */}
         <div className="flex w-full flex-row gap-2 sm:w-auto sm:flex-col lg:ml-auto">
-          <Link href={`/providers/${p.slug}`} className="flex-1 sm:flex-none">
+          <Link href={`/marketplace/providers/${p.slug}`} className="flex-1 sm:flex-none">
             <Button variant="secondary" size="sm" full>
               {t("Voir le profil", "View provider")}
               <ArrowRight className="h-3.5 w-3.5" aria-hidden />
             </Button>
           </Link>
           <Button
+            variant="blue"
             size="sm"
             full
             className="flex-1 sm:flex-none"

@@ -68,7 +68,7 @@ export default function AdminDisputesPage() {
                   </div>
                   <p className="mt-0.5 text-xs text-ink-muted dark:text-[#8FA79C]">
                     {lang === "fr" ? reasonLabels[d.reason][0] : reasonLabels[d.reason][1]} ·{" "}
-                    <Link href={`/requests/${d.requestId}`} className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
+                    <Link href={`/marketplace/request/${d.requestId}`} className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
                       {d.requestId}
                     </Link>{" "}
                     · {p?.name} · {d.openedAt}

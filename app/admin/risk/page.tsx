@@ -52,7 +52,7 @@ export default function AdminRiskPage() {
                   <p className="mt-0.5 text-xs text-ink-muted dark:text-[#8FA79C]">
                     {f.id} ·{" "}
                     {p && (
-                      <Link href={`/providers/${p.slug}`} className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
+                      <Link href={`/marketplace/providers/${p.slug}`} className="font-semibold text-brand-600 hover:underline dark:text-brand-300">
                         {p.name}
                       </Link>
                     )}{" "}

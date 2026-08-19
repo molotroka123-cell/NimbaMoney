@@ -29,6 +29,15 @@ export const paymentRails = [
 
 export type RailId = (typeof paymentRails)[number]["id"];
 
+/**
+ * P2P exchange payment methods — the P2P demo product additionally
+ * supports Wave. Marketplace pilot rails stay unchanged.
+ */
+export type P2PMethodId = RailId | "wave";
+
+/** Demo FX reference used by the P2P prototype (GNF per 1 USDT). */
+export const demoUsdtRateGnf = 8_640;
+
 export const cities = ["Conakry"] as const;
 
 export const districts = [

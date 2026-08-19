@@ -53,22 +53,53 @@ export function BrandBlock({ subtitle }: { subtitle: string }) {
   );
 }
 
+export type SidebarTone = "green" | "blue";
+
+const toneClasses: Record<
+  SidebarTone,
+  {
+    title: string;
+    active: string;
+    idle: string;
+    iconIdle: string;
+    badge: string;
+  }
+> = {
+  green: {
+    title: "text-brand-200/50",
+    active: "bg-brand-500 text-white shadow-sm",
+    idle: "text-brand-100/80 hover:bg-white/10 hover:text-white",
+    iconIdle: "text-brand-300/80 group-hover:text-brand-200",
+    badge: "bg-brand-300 text-brand-950",
+  },
+  blue: {
+    title: "text-mkt-200/50",
+    active: "bg-mkt-500 text-white shadow-sm",
+    idle: "text-mkt-100/80 hover:bg-white/10 hover:text-white",
+    iconIdle: "text-mkt-300/80 group-hover:text-mkt-200",
+    badge: "bg-mkt-300 text-navy-950",
+  },
+};
+
 export function SidebarNav({
   sections,
   footer,
+  tone = "green",
 }: {
   sections: NavSection[];
   footer?: React.ReactNode;
+  tone?: SidebarTone;
 }) {
   const pathname = usePathname();
-  const { lang, t } = useI18n();
+  const { lang } = useI18n();
+  const c = toneClasses[tone];
 
   return (
     <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 pb-4" aria-label="Navigation">
       {sections.map((section, si) => (
         <div key={si} className={si > 0 ? "mt-4" : ""}>
           {section.titleFr && (
-            <p className="mb-1.5 px-3 text-2xs font-bold uppercase tracking-wider text-brand-200/50">
+            <p className={classNames("mb-1.5 px-3 text-2xs font-bold uppercase tracking-wider", c.title)}>
               {lang === "fr" ? section.titleFr : section.titleEn}
             </p>
           )}
@@ -87,15 +118,13 @@ export function SidebarNav({
                     aria-current={active ? "page" : undefined}
                     className={classNames(
                       "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
-                      active
-                        ? "bg-brand-500 text-white shadow-sm"
-                        : "text-brand-100/80 hover:bg-white/10 hover:text-white"
+                      active ? c.active : c.idle
                     )}
                   >
                     <Icon
                       className={classNames(
                         "h-4 w-4 shrink-0",
-                        active ? "text-white" : "text-brand-300/80 group-hover:text-brand-200"
+                        active ? "text-white" : c.iconIdle
                       )}
                       aria-hidden
                     />
@@ -103,7 +132,7 @@ export function SidebarNav({
                       {lang === "fr" ? item.labelFr : item.labelEn}
                     </span>
                     {item.badge ? (
-                      <span className="rounded-full bg-brand-300 px-1.5 text-2xs font-bold text-brand-950">
+                      <span className={classNames("rounded-full px-1.5 text-2xs font-bold", c.badge)}>
                         {item.badge}
                       </span>
                     ) : null}

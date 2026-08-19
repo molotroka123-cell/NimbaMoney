@@ -62,6 +62,9 @@
   .chip-active {
     @apply border-brand-500 bg-brand-50 text-brand-800 dark:border-brand-400 dark:bg-brand-900/60 dark:text-brand-200;
   }
+  .chip-active-blue {
+    @apply border-mkt-500 bg-mkt-50 text-mkt-700 dark:border-mkt-400 dark:bg-navy-800 dark:text-mkt-200;
+  }
   .scroll-x {
     @apply overflow-x-auto;
     scrollbar-width: thin;

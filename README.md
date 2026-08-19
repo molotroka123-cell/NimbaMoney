@@ -1,80 +1,72 @@
-# Nimba Money — Verified Liquidity & Exchange Marketplace (Guinée)
+# Nimba Money — P2P & Verified Marketplace (Guinée)
 
-Clickable, production-grade **frontend prototype** for Nimba Money: the trusted
-marketplace where Guinea finds liquidity.
+Clickable investor prototype (frontend only, deterministic mock state).
+One Nimba ecosystem, **two distinct products**:
 
-> Tell us what money you have and what you need.
-> Nimba finds the best verified provider.
+| | NIMBA P2P | NIMBA MARKETPLACE |
+| --- | --- | --- |
+| Color | **Green** (dark forest sidebar) | **Blue** (deep navy sidebar) |
+| Route | `/p2p` | `/marketplace` |
+| Model | Direct peer-to-peer exchange: pick another trader's offer (GNF ↔ USDT, Orange Money / MTN / Wave / Bank / Cash), order room with chat, countdown and simulated "Nimba protection" (**demo functionality only**) | Compare professional verified exchangers & liquidity providers: reputation, verification, liquidity, locations, limits. Request → provider accepts → **direct settlement** (non-custodial). Nimba is the matching & trust layer |
+| Records | P2P **orders** (`/p2p/orders`) | Marketplace **requests** (`/marketplace/requests`) |
 
-**This is a prototype.** All numbers are mock/illustrative development data
-(see `/data/mock`). No regulatory claims are made anywhere in the UI.
+The shared entry point `/` shows both products; account, KYC, messages and
+support are shared. **All data is illustrative mock data** (`/data/mock`) —
+no regulatory claims anywhere.
 
-## Product model (two tracks)
+## Primary demo providers
 
-- **Track A — Verified liquidity marketplace.** Verified providers with
-  cash/liquidity meet customers with digital money. Nimba is the matching
-  layer; settlement happens **directly** between customer and provider over
-  approved rails (bank, cash, Orange Money, MTN MoMo). Nimba bills providers
-  a commission on matched deals — Booking-style, non-custodial.
-- **Track B — Provider listings / paid placement.** Free listing, Pro
-  subscription (priority matching, lead analytics, extra districts) and
-  Featured slots — always labeled **Sponsorisé**, never disguised as organic
-  ranking. **PRO ≠ VERIFIED**: subscription never raises verification level.
-- **Tier 2 — gated P2P** (future): vetted individuals with full KYC, deposit
-  and strict limits. Behind `enableTier2P2P` and visually distinct
-  (« P2P vérifié » ≠ « Entreprise vérifiée »).
+- **Kaba Trade** — main verified business (PRO, enhanced verification, Kaloum,
+  4.98, 2 841 deals) and top P2P trader. Investor journey #1 & #2 anchor.
+- **Tymur MrSwap** — second key provider (PRO + Featured, Matoto, 4.9,
+  3 812 deals, largest liquidity) and very fast P2P trader.
+
+Around them: Binta Express, Mamadou Change, Conakry Cash Point, Alpha Change,
+Guinée Market, Nimba Finance, Kankan Liquidity, Ratoma Exchange, Kaloum Cash
+Hub, Matoto Money Point + a generated long tail (22 providers, 21 traders,
+60+ offers, 12 orders).
+
+## Investor demo flows (fully clickable)
+
+1. **P2P**: `/` → Ouvrir le P2P → 10M GNF → choose Kaba Trade → order room →
+   pay → « J'ai payé » → simulated confirmation → USDT released → receipt.
+2. **Marketplace**: `/` → Ouvrir le Marketplace → compare Kaba Trade vs
+   Tymur MrSwap → open profile → verification/liquidity/reviews →
+   Demander une liquidité → request timeline `/marketplace/request/REQ-2418`.
 
 ## Getting started
 
 ```bash
 npm install
-npm run dev       # http://localhost:3000
-npm run build     # production build (31 routes)
+npm run dev    # http://localhost:3000
+npm run build  # 41 routes, production build
 ```
 
-## Configuration
-
-`config/product.ts`
-
-- `productMode: "pilot" | "full"` — pilot = GNF only, bank/cash/mobile-money
-  rails, verified businesses only, no open P2P. Full unlocks the future
-  multi-currency architecture.
-- `enableTier2P2P` — gates the `/p2p` marketplace (false at launch).
-
-Primary language is **French**; English is built in. Every string goes
-through `t(fr, en)` (`lib/i18n.tsx`), so the codebase is localization-ready.
-Light mode + dark-green sidebar by default; full dark mode (deep green/slate,
-not black) via the theme toggle.
-
-## Routes
-
-| Area | Routes |
-| --- | --- |
-| Marketplace | `/` (search + best offers + market overview), `/find`, `/providers`, `/providers/[slug]` |
-| Deals | request drawer → `/requests`, `/requests/[id]` (timeline, receipt, dispute), `/messages` |
-| Trust | `/verification` (levels + checks) |
-| Business | `/business`, `/business/apply` (10-step wizard, save & resume) |
-| Account | `/account`, `/account/{deals,saved,profile,security,support}` |
-| Provider dashboard | `/partner`, `/partner/{leads,services,analytics,subscription}` (+stubs) |
-| Operations | `/ops` (manual dispatch for the pilot) |
-| Admin | `/admin`, `/admin/{providers,disputes,risk,reconciliation}` (+stubs) |
-| Future | `/p2p` (gated) |
-
-## Stack
-
-Next.js 14 (App Router) · TypeScript · Tailwind CSS · Lucide icons ·
-React Hook Form + Zod (provider application). No other runtime dependencies.
+Deployable to Vercel as-is (no backend, no env vars needed).
 
 ## Structure
 
 ```
-app/            routes (route-group (app) = consumer shell; partner/admin/ops have own shells)
-components/     ui, layout, marketplace, providers, requests, dashboard
-config/         product mode, rails, districts
-data/mock/      ALL mock data (providers, requests, reviews, messages, market, admin)
-lib/            i18n, theme, formatting, marketplace ranking
-types/          core data models
+app/(app)/       shared shell: entry home, messages, verification, business, account
+app/p2p/         GREEN product: trade table, order room, orders, wallets, disputes
+app/marketplace/ BLUE product: provider comparison, profiles, requests, saved
+app/partner/     provider dashboard (Kaba Trade demo)
+app/ops/         manual dispatch (pilot operations)
+app/admin/       admin console: applications, disputes, risk, reconciliation
+components/      ui / layout (ProductShell, tone-aware sidebar) / marketplace / requests / messages
+data/mock/       ALL mock data — providers, p2p traders/offers/orders, requests, reviews, admin
+config/          product mode, rails (+ Wave for P2P), demo FX rate
 ```
 
-Ranking (`lib/marketplace.ts`) is transparent: fee, rating, response time,
-liquidity and history. Paid placement never alters the trust score.
+Legacy single-marketplace routes (`/find`, `/providers`, `/requests`)
+redirect to the new Marketplace routes.
+
+## Guardrails kept from the master plan
+
+- PRO (subscription) ≠ VERIFIED (verification level) — stated in UI.
+- Sponsored placement is always labeled and never alters ranking
+  (weights shown in the Marketplace right panel).
+- Marketplace wording is non-custodial: direct settlement, logged deals,
+  no escrow claims. The P2P "Protection Nimba" is explicitly marked
+  **(démo)** and exists only inside the P2P prototype.
+- French-first UI with full English via `t(fr, en)`; light + dark themes.

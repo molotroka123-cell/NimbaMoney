@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/Button";
 import { classNames } from "@/lib/format";
 
 const links = [
-  { href: "/find", fr: "Trouver", en: "Find" },
-  { href: "/providers", fr: "Partenaires", en: "Providers" },
+  { href: "/p2p", fr: "P2P", en: "P2P" },
+  { href: "/marketplace", fr: "Marketplace", en: "Marketplace" },
   { href: "/verification", fr: "Comment ça marche", en: "How it works" },
   { href: "/business", fr: "Business", en: "Business" },
   { href: "/partner/subscription", fr: "Tarifs", en: "Pricing" },
@@ -108,13 +108,19 @@ export function TopNav({ onOpenSidebar }: { onOpenSidebar?: () => void }) {
             )}
           </button>
 
-          <Link href="/account" className="hidden sm:block">
-            <Button variant="ghost" size="sm">
-              {t("Connexion", "Log in")}
-            </Button>
-          </Link>
-          <Link href="/account">
-            <Button size="sm">{t("Créer un compte", "Sign up")}</Button>
+          <Link
+            href="/account"
+            className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2.5 hover:bg-surface-sunken dark:hover:bg-night-raised"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-900 text-2xs font-bold text-brand-100">
+              MO
+            </span>
+            <span className="hidden text-xs font-semibold sm:block">
+              Mohamed
+              <span className="block text-2xs font-medium text-brand-600 dark:text-brand-300">
+                {t("Vérifié", "Verified")}
+              </span>
+            </span>
           </Link>
         </div>
       </div>

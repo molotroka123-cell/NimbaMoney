@@ -168,10 +168,12 @@ export function BarRow({
   label,
   pct,
   value,
+  barClass = "bg-brand-500",
 }: {
   label: string;
   pct: number;
   value?: string;
+  barClass?: string;
 }) {
   return (
     <div>
@@ -183,7 +185,7 @@ export function BarRow({
       </div>
       <div className="mt-1 h-1.5 rounded-full bg-line dark:bg-night-lineStrong">
         <div
-          className="h-1.5 rounded-full bg-brand-500"
+          className={classNames("h-1.5 rounded-full", barClass)}
           style={{ width: `${pct}%` }}
         />
       </div>

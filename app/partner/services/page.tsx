@@ -14,7 +14,7 @@ import { ServicePair } from "@/lib/rails";
 export default function PartnerServicesPage() {
   const { lang, t } = useI18n();
   const { toast } = useToast();
-  const me = providers[0]; // Sékou Exchange operates this dashboard
+  const me = providers[0]; // Kaba Trade operates this demo dashboard
   const [enabled, setEnabled] = useState<Record<string, boolean>>(
     Object.fromEntries(me.services.map((s) => [s.id, true]))
   );

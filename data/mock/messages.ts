@@ -41,7 +41,7 @@ export const threads: MessageThread[] = [
         id: "m5",
         threadId: "th1",
         from: "provider",
-        text: "Coordonnées bancaires : BICIGUI · Sékou Exchange SARL · GN012 3456 7890. Référence à indiquer : REQ-2418.",
+        text: "Coordonnées bancaires : Banque Démo GN · Kaba Trade SARL · GN012 3456 7890. Référence à indiquer : REQ-2418.",
         at: "10:27",
       },
       {
@@ -85,7 +85,7 @@ export const threads: MessageThread[] = [
   },
   {
     id: "th3",
-    providerId: "p6",
+    providerId: "p9",
     unread: 1,
     lastAt: "Hier",
     messages: [

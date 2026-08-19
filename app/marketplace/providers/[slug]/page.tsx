@@ -89,7 +89,7 @@ export default function ProviderProfilePage() {
     <div className="space-y-4 p-4 lg:p-6">
       {/* breadcrumbs */}
       <nav className="text-2xs text-ink-muted dark:text-[#8FA79C]" aria-label="Breadcrumb">
-        <Link href="/providers" className="hover:text-brand-600">
+        <Link href="/marketplace/providers" className="hover:text-mkt-600">
           {t("Partenaires", "Providers")}
         </Link>{" "}
         / <span className="font-semibold text-ink dark:text-white">{p.name}</span>
@@ -116,7 +116,7 @@ export default function ProviderProfilePage() {
                 {p.successRate}% {t("de réussite", "success rate")}
               </span>
               <span className="inline-flex items-center gap-1">
-                <CalendarCheck className="h-3.5 w-3.5 text-brand-500" aria-hidden />
+                <CalendarCheck className="h-3.5 w-3.5 text-mkt-500" aria-hidden />
                 {t("Membre depuis", "Joined")}{" "}
                 {new Date(p.joinedAt).toLocaleDateString(lang === "fr" ? "fr-FR" : "en-GB", {
                   month: "long",
@@ -132,6 +132,7 @@ export default function ProviderProfilePage() {
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
             <Button
+              variant="blue"
               onClick={() => setService(p.services[0])}
               disabled={p.status === "offline"}
             >
@@ -150,7 +151,7 @@ export default function ProviderProfilePage() {
               aria-pressed={saved}
             >
               <Bookmark
-                className={classNames("h-4 w-4", saved && "fill-brand-500 text-brand-500")}
+                className={classNames("h-4 w-4", saved && "fill-mkt-500 text-mkt-500")}
                 aria-hidden
               />
               {saved ? t("Enregistré", "Saved") : t("Enregistrer", "Save")}
@@ -196,7 +197,7 @@ export default function ProviderProfilePage() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <ServicePair from={s.from} to={s.to} lang={lang} />
-                    <Pill tone="green">{formatPct(s.feePct)}</Pill>
+                    <Pill tone="blue">{formatPct(s.feePct)}</Pill>
                   </div>
                   <dl className="mt-2.5 grid grid-cols-3 gap-2 text-2xs">
                     <div>
@@ -253,13 +254,13 @@ export default function ProviderProfilePage() {
                     <svg className="absolute inset-0 h-full w-full opacity-50" aria-hidden>
                       <defs>
                         <pattern id={`g-${l.id}`} width="24" height="24" patternUnits="userSpaceOnUse">
-                          <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#008A58" strokeOpacity="0.2" />
+                          <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#2563EB" strokeOpacity="0.2" />
                         </pattern>
                       </defs>
                       <rect width="100%" height="100%" fill={`url(#g-${l.id})`} />
                     </svg>
                     <MapPin
-                      className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-full text-brand-600"
+                      className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-full text-mkt-600"
                       aria-hidden
                     />
                     <div className="absolute right-2 top-2">
@@ -320,7 +321,7 @@ export default function ProviderProfilePage() {
                     role="tab"
                     aria-selected={reviewTab === id}
                     onClick={() => setReviewTab(id)}
-                    className={classNames("chip", reviewTab === id && "chip-active")}
+                    className={classNames("chip", reviewTab === id && "chip-active-blue")}
                   >
                     {label}
                   </button>
@@ -345,7 +346,7 @@ export default function ProviderProfilePage() {
         <div className="space-y-4">
           <Card className="card-pad">
             <h2 className="inline-flex items-center gap-1.5 text-sm font-bold">
-              <BadgeCheck className="h-4 w-4 text-brand-500" aria-hidden />
+              <BadgeCheck className="h-4 w-4 text-mkt-500" aria-hidden />
               {t("Vérification", "Verification")}
             </h2>
             <ul className="mt-3 space-y-2">
@@ -353,7 +354,7 @@ export default function ProviderProfilePage() {
                 <li key={c.label} className="flex items-center justify-between gap-2 text-xs">
                   <span className="text-ink-secondary dark:text-[#B7C9C0]">{c.label}</span>
                   {c.ok ? (
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-brand-500" aria-label={t("vérifié", "verified")} />
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-mkt-500" aria-label={t("vérifié", "verified")} />
                   ) : (
                     <XCircle className="h-4 w-4 shrink-0 text-ink-faint" aria-label={t("non vérifié", "not verified")} />
                   )}
@@ -371,7 +372,7 @@ export default function ProviderProfilePage() {
             </p>
             <Link
               href="/verification"
-              className="mt-2 inline-block text-2xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-300"
+              className="mt-2 inline-block text-2xs font-semibold text-mkt-600 hover:text-mkt-700 dark:text-mkt-300"
             >
               {t("Comment Nimba vérifie les partenaires →", "How Nimba verifies providers →")}
             </Link>
@@ -425,7 +426,7 @@ function ReviewItem({ review: r }: { review: Review }) {
           {r.dealSummary} · {formatGnf(r.amountGnf)}
         </span>
         {r.verifiedDeal && (
-          <Pill tone="green">{t("Transaction vérifiée", "Verified deal")}</Pill>
+          <Pill tone="blue">{t("Transaction vérifiée", "Verified deal")}</Pill>
         )}
         {r.sentiment === "dispute" && (
           <Pill tone="red">{t("Litige", "Dispute")}</Pill>

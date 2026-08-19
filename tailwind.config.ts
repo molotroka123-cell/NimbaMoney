@@ -51,6 +51,23 @@ const config: Config = {
           line: "#1F3A30",
           lineStrong: "#2A4A3D",
         },
+        // Marketplace (blue product) — deep navy sidebar + royal blue actions
+        navy: {
+          950: "#050D1C",
+          900: "#0A1B33",
+          800: "#122947",
+          700: "#1B3A63",
+        },
+        mkt: {
+          700: "#1E40AF",
+          600: "#1D4ED8",
+          500: "#2563EB",
+          400: "#3B82F6",
+          300: "#93C5FD",
+          200: "#BFDBFE",
+          100: "#DBEAFE",
+          50: "#EFF4FF",
+        },
         // Guinea flag — tiny accents only
         gn: {
           red: "#CE1126",

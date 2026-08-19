@@ -142,7 +142,7 @@ export default function ApplyPage() {
     lang === "fr" ? "Paiement marchand" : "Merchant payment",
   ];
   const settlementOptions = [
-    t("Compte bancaire (BICIGUI, SGBG…)", "Bank account (BICIGUI, SGBG…)"),
+    t("Compte bancaire (banque locale)", "Bank account (local bank)"),
     "Orange Money Business",
     "MTN MoMo Business",
     t("Espèces au guichet", "Cash at counter"),

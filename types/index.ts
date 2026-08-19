@@ -1,6 +1,6 @@
 /** Core Nimba Money data models. All mock values live in /data/mock — never inline in UI. */
 
-import type { RailId } from "@/config/product";
+import type { RailId, P2PMethodId } from "@/config/product";
 
 export type Lang = "fr" | "en";
 
@@ -234,6 +234,63 @@ export interface OpsRequestRow {
   ageMinutes: number;
   status: "unmatched" | "assigned" | "accepted" | "completed" | "issue";
   assignedProviderId?: string;
+}
+
+/* ── P2P Exchange (green product) ─────────────────────────────────────
+ * A P2P trader profile is a SEPARATE status from a Marketplace business
+ * provider profile — the same person/entity can hold both, with
+ * product-specific stats. `providerId` links them when both exist. */
+
+export interface P2PTrader {
+  id: string;
+  slug: string;
+  name: string;
+  initials: string;
+  hue: number;
+  verified: boolean;
+  trades: number;
+  completionPct: number;
+  responseMinutes: number;
+  online: boolean;
+  /** Linked Marketplace business entity, when the trader also operates one. */
+  providerId?: string;
+}
+
+/** side is from the taker's perspective: "buy" = taker buys USDT with GNF. */
+export interface P2POffer {
+  id: string;
+  traderId: string;
+  side: "buy" | "sell";
+  priceGnf: number; // GNF per 1 USDT
+  minGnf: number;
+  maxGnf: number;
+  availableUsdt: number;
+  method: P2PMethodId;
+}
+
+export type P2POrderStatus =
+  | "created"
+  | "payment_pending"
+  | "payment_sent"
+  | "confirming"
+  | "released"
+  | "completed"
+  | "cancelled"
+  | "disputed";
+
+export interface P2POrder {
+  id: string;
+  offerId: string;
+  traderId: string;
+  side: "buy" | "sell";
+  amountGnf: number;
+  priceGnf: number;
+  amountUsdt: number;
+  method: P2PMethodId;
+  status: P2POrderStatus;
+  createdAt: string;
+  /** Payment window for the demo countdown, in minutes. */
+  deadlineMinutes: number;
 }
 
 export interface ReconciliationRow {

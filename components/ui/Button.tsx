@@ -3,14 +3,24 @@
 import React from "react";
 import { classNames } from "@/lib/format";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "dark";
+type Variant =
+  | "primary"
+  | "blue"
+  | "blueSecondary"
+  | "secondary"
+  | "ghost"
+  | "danger"
+  | "dark";
 type Size = "xs" | "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
   primary:
     "bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700 shadow-sm",
+  blue: "bg-mkt-500 text-white hover:bg-mkt-600 active:bg-mkt-700 shadow-sm",
+  blueSecondary:
+    "border border-line bg-white text-mkt-600 hover:border-mkt-400 hover:text-mkt-700 dark:border-night-lineStrong dark:bg-night-raised dark:text-mkt-300",
   secondary:
-    "border border-line bg-white text-ink-secondary hover:border-brand-400 hover:text-brand-700 dark:border-night-lineStrong dark:bg-night-raised dark:text-[#CBDDD4] dark:hover:text-brand-200",
+    "border border-line bg-white text-ink-secondary hover:border-line-strong hover:bg-surface-sunken hover:text-ink dark:border-night-lineStrong dark:bg-night-raised dark:text-[#CBDDD4] dark:hover:bg-night-raised dark:hover:text-white",
   ghost:
     "text-ink-secondary hover:bg-surface-sunken hover:text-ink dark:text-[#B7C9C0] dark:hover:bg-night-raised",
   danger: "bg-danger text-white hover:bg-red-700",

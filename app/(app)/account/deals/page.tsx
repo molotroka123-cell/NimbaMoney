@@ -51,7 +51,7 @@ export default function CompletedDealsPage() {
                   <Printer className="h-3.5 w-3.5" aria-hidden />
                   {t("Reçu", "Receipt")}
                 </Button>
-                <Link href={`/requests/${d.requestId}`}>
+                <Link href={`/marketplace/request/${d.requestId}`}>
                   <Button variant="ghost" size="sm">
                     {t("Détails", "Details")}
                   </Button>

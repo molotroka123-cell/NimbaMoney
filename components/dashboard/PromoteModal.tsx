@@ -54,10 +54,10 @@ export function PromoteModal({ open, onClose }: { open: boolean; onClose: () => 
           <p className="label-xs">{t("Aperçu dans les résultats", "Preview in results")}</p>
           <div className="rounded-xl border border-amber-200 bg-white p-3 shadow-card dark:border-amber-800 dark:bg-night-card">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 text-2xs font-bold text-white">SE</div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-800 text-2xs font-bold text-white">KT</div>
               <div>
                 <p className="flex items-center gap-1.5 text-xs font-bold">
-                  Sékou Exchange <FeaturedBadge />
+                  Kaba Trade <FeaturedBadge />
                 </p>
                 <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                   {service} · {district}

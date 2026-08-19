@@ -7,8 +7,8 @@ export const marketOverview = {
   requestsToday: 148,
   completedToday: 116,
   medianFillMinutes: 22,
-  activeProviders: 34,
-  availableLiquidityGnf: 2_140_000_000,
+  activeProviders: 19,
+  availableLiquidityGnf: 2_900_000_000,
   repeatCustomerRate: 41,
   disputeRate: 1.2,
   /** 14-day matched-deals trend for the small activity line. */

@@ -13,15 +13,16 @@ export function formatNumber(n: number): string {
 export function formatGnfCompact(n: number, lang: "fr" | "en" = "fr"): string {
   const abs = Math.abs(n);
   if (abs >= 1_000_000_000)
-    return `${trim(n / 1_000_000_000)}${lang === "fr" ? "Md" : "B"} GNF`;
-  if (abs >= 1_000_000) return `${trim(n / 1_000_000)}M GNF`;
-  if (abs >= 1_000) return `${trim(n / 1_000)}K GNF`;
+    return `${trim(n / 1_000_000_000, lang)}${lang === "fr" ? "Md" : "B"} GNF`;
+  if (abs >= 1_000_000) return `${trim(n / 1_000_000, lang)}M GNF`;
+  if (abs >= 1_000) return `${trim(n / 1_000, lang)}K GNF`;
   return `${n} GNF`;
 }
 
-function trim(x: number): string {
+function trim(x: number, lang: "fr" | "en" = "fr"): string {
   const r = Math.round(x * 10) / 10;
-  return r % 1 === 0 ? String(Math.round(r)) : r.toFixed(1);
+  if (r % 1 === 0) return String(Math.round(r));
+  return lang === "fr" ? r.toFixed(1).replace(".", ",") : r.toFixed(1);
 }
 
 export function formatPct(n: number): string {

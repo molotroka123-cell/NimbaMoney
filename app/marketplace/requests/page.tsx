@@ -26,7 +26,7 @@ export default function RequestsPage() {
             )}
           </p>
         </div>
-        <Link href="/find">
+        <Link href="/marketplace">
           <Button>
             <Plus className="h-4 w-4" aria-hidden />
             {t("Nouvelle demande", "New request")}
@@ -38,7 +38,7 @@ export default function RequestsPage() {
         {requests.map((r) => {
           const p = getProviderById(r.providerId);
           return (
-            <Link key={r.id} href={`/requests/${r.id}`} className="block">
+            <Link key={r.id} href={`/marketplace/request/${r.id}`} className="block">
               <Card className="card-pad transition-shadow hover:shadow-raised">
                 <div className="flex flex-wrap items-center gap-3">
                   {p && <Avatar initials={p.logoInitials} hue={p.logoHue} />}
@@ -56,7 +56,7 @@ export default function RequestsPage() {
                     <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                       {t("Vous recevez", "You receive")}
                     </p>
-                    <p className="text-sm font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
+                    <p className="text-sm font-extrabold tabular-nums text-mkt-600 dark:text-mkt-300">
                       {formatGnf(r.receiveGnf)}
                     </p>
                   </div>

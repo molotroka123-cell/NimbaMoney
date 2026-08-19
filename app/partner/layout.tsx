@@ -65,7 +65,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
         <BrandBlock subtitle={t("Espace partenaire", "Provider dashboard")} />
       </div>
       <div className="mx-3 mb-2 mt-3 rounded-xl bg-white/[0.06] p-3 ring-1 ring-white/10">
-        <p className="text-xs font-bold text-white">Sékou Exchange</p>
+        <p className="text-xs font-bold text-white">Kaba Trade</p>
         <div className="mt-1 flex items-center gap-1.5">
           <span className="rounded bg-brand-300 px-1 text-2xs font-bold text-brand-950">PRO</span>
           <span className="text-2xs text-brand-200/70">
@@ -109,7 +109,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
             <Pill tone="green">{t("En ligne", "Online")}</Pill>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Link href="/providers/sekou-exchange">
+            <Link href="/marketplace/providers/kaba-trade">
               <Button variant="secondary" size="sm">
                 {t("Voir mon profil public", "View public profile")}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden />

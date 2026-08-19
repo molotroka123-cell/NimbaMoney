@@ -48,7 +48,7 @@ export const requests: DealRequest[] = [
   },
   {
     id: "REQ-2361",
-    providerId: "p6",
+    providerId: "p9",
     from: "bank",
     to: "cash",
     amountGnf: 35_000_000,

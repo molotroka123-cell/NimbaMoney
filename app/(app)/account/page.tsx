@@ -39,7 +39,7 @@ export default function AccountOverviewPage() {
         <Card className="card-pad">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold">{t("Demandes récentes", "Recent requests")}</h2>
-            <Link href="/requests" className="text-2xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-300">
+            <Link href="/marketplace/requests" className="text-2xs font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-300">
               {t("Tout voir →", "View all →")}
             </Link>
           </div>
@@ -49,7 +49,7 @@ export default function AccountOverviewPage() {
               return (
                 <li key={r.id}>
                   <Link
-                    href={`/requests/${r.id}`}
+                    href={`/marketplace/request/${r.id}`}
                     className="flex items-center gap-3 py-2.5 hover:bg-surface-sunken/50 dark:hover:bg-night-raised/50"
                   >
                     {p && <Avatar initials={p.logoInitials} hue={p.logoHue} size="sm" />}
@@ -78,7 +78,7 @@ export default function AccountOverviewPage() {
             {saved.map((p) => (
               <li key={p.id}>
                 <Link
-                  href={`/providers/${p.slug}`}
+                  href={`/marketplace/providers/${p.slug}`}
                   className="flex items-center gap-3 py-2.5"
                 >
                   <Avatar initials={p.logoInitials} hue={p.logoHue} size="sm" />
