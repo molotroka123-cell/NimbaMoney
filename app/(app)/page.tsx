@@ -12,6 +12,7 @@ import {
   ArrowLeftRight,
   BadgeCheck,
   Scale,
+  PlayCircle,
 } from "lucide-react";
 import { Card, Avatar, SectionTitle } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
@@ -26,6 +27,7 @@ import { requests } from "@/data/mock/requests";
 import { threads } from "@/data/mock/messages";
 import { formatGnf, formatNumber } from "@/lib/format";
 import { railLabel } from "@/lib/rails";
+import { startDemoTour } from "@/components/demo/DemoTour";
 
 /**
  * Shared ecosystem entry point. One Nimba account, two products:
@@ -54,6 +56,12 @@ export default function HomePage() {
             "One Nimba account, two ways to exchange."
           )}
         </p>
+        <div className="mt-3">
+          <Button variant="secondary" size="sm" onClick={startDemoTour}>
+            <PlayCircle className="h-4 w-4" aria-hidden />
+            {t("▶ Démo guidée (2 min)", "▶ Guided demo (2 min)")}
+          </Button>
+        </div>
       </div>
 
       {/* the two products */}
