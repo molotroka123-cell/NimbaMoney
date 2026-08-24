@@ -12,6 +12,13 @@ export const metadata: Metadata = {
   },
   description:
     "Un compte, deux façons d'échanger : le P2P Exchange pour trader directement avec des pairs vérifiés, et le Marketplace pour comparer des échangeurs professionnels et fournisseurs de liquidité vérifiés en Guinée.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Nimba",
+  },
+  icons: { apple: "/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {
