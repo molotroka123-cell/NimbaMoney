@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 import { Providers } from "@/components/layout/Providers";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://nimba-money.vercel.app"),
   title: {
     default: "Nimba Money — P2P Exchange & Marketplace vérifié en Guinée",
     template: "%s · Nimba Money",
@@ -19,6 +20,23 @@ export const metadata: Metadata = {
     title: "Nimba",
   },
   icons: { apple: "/apple-touch-icon.png" },
+  openGraph: {
+    title: "Nimba Money — P2P Exchange & Marketplace vérifié en Guinée",
+    description:
+      "Tradez en direct avec des pairs vérifiés ou comparez des échangeurs professionnels. Un compte, deux produits — prototype investisseur.",
+    url: "/",
+    siteName: "Nimba Money",
+    locale: "fr_FR",
+    type: "website",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Nimba Money" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nimba Money — P2P Exchange & Marketplace vérifié en Guinée",
+    description:
+      "Tradez en direct avec des pairs vérifiés ou comparez des échangeurs professionnels. Un compte, deux produits — prototype investisseur.",
+    images: ["/og.png"],
+  },
 };
 
 export const viewport: Viewport = {
