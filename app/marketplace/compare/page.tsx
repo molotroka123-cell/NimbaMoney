@@ -96,7 +96,7 @@ function CompareInner() {
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
           {t("Retour au Marketplace", "Back to Marketplace")}
         </Link>
-        <h1 className="mt-2 inline-flex items-center gap-2 text-xl font-extrabold">
+        <h1 className="mt-2 flex items-center gap-2 text-xl font-extrabold">
           <Scale className="h-5 w-5 text-mkt-500" aria-hidden />
           {t("Comparer les partenaires", "Compare providers")}
         </h1>

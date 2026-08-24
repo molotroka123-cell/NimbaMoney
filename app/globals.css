@@ -94,7 +94,9 @@
   }
 }
 .page-fade {
-  animation: page-fade 0.35s ease-out both;
+  /* no fill-mode: the transform must fully clear after the animation,
+     otherwise it becomes a containing block for position:fixed children */
+  animation: page-fade 0.35s ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
   .page-fade {
