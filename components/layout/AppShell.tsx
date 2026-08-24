@@ -119,7 +119,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <TopNav onOpenSidebar={() => setSidebarOpen(true)} />
-        <main className="flex-1 pb-20 lg:pb-8">{children}</main>
+        <main className="page-fade flex-1 pb-20 lg:pb-8">{children}</main>
 
         {/* mobile bottom navigation */}
         <nav

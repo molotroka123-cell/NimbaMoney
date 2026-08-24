@@ -15,6 +15,8 @@ import {
   BadgeCheck,
   Award,
   Info,
+  Scale,
+  X,
 } from "lucide-react";
 import { Card, Avatar, EmptyState, SkeletonRows, BarRow } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
@@ -68,8 +70,20 @@ function MarketplaceInner() {
   const [drawer, setDrawer] = useState(false);
   const [selected, setSelected] = useState<Offer | null>(null);
   const [visible, setVisible] = useState(8);
+  const [cmp, setCmp] = useState<string[]>([]);
 
   const amountGnf = parseAmount(amount) || 10_000_000;
+
+  const toggleCmp = (id: string) => {
+    setCmp((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 3) {
+        toast(t("Maximum 3 partenaires à comparer.", "Compare up to 3 providers."), "info");
+        return prev;
+      }
+      return [...prev, id];
+    });
+  };
 
   const rows = useMemo(() => {
     let xs = providers.filter((p) => {
@@ -184,6 +198,22 @@ function MarketplaceInner() {
                   <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-2xs font-bold text-ink-muted">
                     GNF
                   </span>
+                </div>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {([1_000_000, 5_000_000, 10_000_000, 25_000_000] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setAmount(formatAmountInput(String(v)))}
+                      className={classNames(
+                        "rounded-md border px-2 py-1 text-2xs font-bold tabular-nums transition-colors",
+                        amountGnf === v
+                          ? "border-mkt-500 bg-mkt-50 text-mkt-700 dark:bg-navy-800 dark:text-mkt-300"
+                          : "border-line text-ink-muted hover:border-mkt-400 hover:text-ink dark:border-night-lineStrong dark:text-[#8FA79C]"
+                      )}
+                    >
+                      {v / 1_000_000}M
+                    </button>
+                  ))}
                 </div>
               </div>
               <div className="lg:col-span-2">
@@ -304,7 +334,7 @@ function MarketplaceInner() {
                     </thead>
                     <tbody className="divide-y divide-line dark:divide-night-line">
                       {rows.slice(0, visible).map((p) => (
-                        <ProviderRow key={p.id} p={p} onRequest={() => requestDeal(p)} />
+                        <ProviderRow key={p.id} p={p} onRequest={() => requestDeal(p)} cmp={cmp.includes(p.id)} onCmp={() => toggleCmp(p.id)} />
                       ))}
                     </tbody>
                   </table>
@@ -312,7 +342,7 @@ function MarketplaceInner() {
                 {/* mobile cards */}
                 <ul className="divide-y divide-line lg:hidden dark:divide-night-line">
                   {rows.slice(0, visible).map((p) => (
-                    <ProviderCardMobile key={p.id} p={p} onRequest={() => requestDeal(p)} />
+                    <ProviderCardMobile key={p.id} p={p} onRequest={() => requestDeal(p)} cmp={cmp.includes(p.id)} onCmp={() => toggleCmp(p.id)} />
                   ))}
                 </ul>
                 {visible < rows.length && (
@@ -513,6 +543,33 @@ function MarketplaceInner() {
       {selected && (
         <CreateRequestModal offer={selected} amountGnf={amountGnf} onClose={() => setSelected(null)} />
       )}
+
+      {/* sticky compare bar */}
+      {cmp.length > 0 && (
+        <div className="fixed inset-x-3 bottom-20 z-50 mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-navy-900/95 px-4 py-3 text-white shadow-overlay backdrop-blur lg:bottom-6">
+          <Scale className="h-4 w-4 shrink-0 text-mkt-300" aria-hidden />
+          <p className="min-w-0 flex-1 truncate text-xs">
+            <span className="font-bold">{cmp.length}/3</span>{" "}
+            {t("sélectionné(s) :", "selected:")}{" "}
+            {cmp
+              .map((id) => providers.find((p) => p.id === id)?.name)
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+          <Link href={`/marketplace/compare?ids=${cmp.join(",")}`}>
+            <Button variant="blue" size="sm" className="whitespace-nowrap" disabled={cmp.length < 2}>
+              {t("Comparer", "Compare")}
+            </Button>
+          </Link>
+          <button
+            onClick={() => setCmp([])}
+            aria-label={t("Vider la sélection", "Clear selection")}
+            className="rounded-md p-1 text-white/70 hover:bg-white/10 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -539,7 +596,7 @@ function LiquidityBars({ gnf }: { gnf: number }) {
   );
 }
 
-function ProviderRow({ p, onRequest }: { p: Provider; onRequest: () => void }) {
+function ProviderRow({ p, onRequest, cmp, onCmp }: { p: Provider; onRequest: () => void; cmp: boolean; onCmp: () => void }) {
   const { lang, t } = useI18n();
   return (
     <tr
@@ -550,6 +607,13 @@ function ProviderRow({ p, onRequest }: { p: Provider; onRequest: () => void }) {
     >
       <td className="td-cell">
         <div className="flex items-center gap-2.5">
+          <input
+            type="checkbox"
+            className="h-4 w-4 shrink-0 cursor-pointer rounded accent-mkt-500"
+            checked={cmp}
+            onChange={onCmp}
+            aria-label={t(`Comparer ${p.name}`, `Compare ${p.name}`)}
+          />
           <Avatar initials={p.logoInitials} hue={p.logoHue} />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
@@ -611,7 +675,7 @@ function ProviderRow({ p, onRequest }: { p: Provider; onRequest: () => void }) {
   );
 }
 
-function ProviderCardMobile({ p, onRequest }: { p: Provider; onRequest: () => void }) {
+function ProviderCardMobile({ p, onRequest, cmp, onCmp }: { p: Provider; onRequest: () => void; cmp: boolean; onCmp: () => void }) {
   const { lang, t } = useI18n();
   return (
     <li className="p-4">
@@ -624,6 +688,16 @@ function ProviderCardMobile({ p, onRequest }: { p: Provider; onRequest: () => vo
             </Link>
             <TierBadge tier={p.subscriptionTier} />
             {p.isFeatured && <FeaturedBadge />}
+            <label className="ml-auto inline-flex cursor-pointer items-center gap-1.5 p-1 text-2xs font-semibold text-ink-muted dark:text-[#8FA79C]">
+              <input
+                type="checkbox"
+                className="h-4 w-4 cursor-pointer rounded accent-mkt-500"
+                checked={cmp}
+                onChange={onCmp}
+                aria-label={t(`Comparer ${p.name}`, `Compare ${p.name}`)}
+              />
+              {t("Comparer", "Compare")}
+            </label>
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
             <VerificationBadge type={p.type} level={p.verification.level} compact />

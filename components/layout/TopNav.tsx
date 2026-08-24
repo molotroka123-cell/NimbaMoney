@@ -8,6 +8,8 @@ import { useI18n } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useToast } from "@/components/ui/Toast";
 import { classNames } from "@/lib/format";
+import { GlobalSearch } from "@/components/layout/GlobalSearch";
+import { Notifications } from "@/components/layout/Notifications";
 
 const links = [
   { href: "/p2p", fr: "P2P", en: "P2P" },
@@ -73,6 +75,8 @@ export function TopNav({ onOpenSidebar }: { onOpenSidebar?: () => void }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-1.5">
+          <GlobalSearch />
+          <Notifications />
           {/* currency context — pilot is GNF-only */}
           <span
             className="hidden items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-xs font-semibold sm:inline-flex dark:border-night-lineStrong"

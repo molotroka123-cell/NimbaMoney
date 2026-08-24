@@ -391,7 +391,7 @@ function RequestStatusInner() {
         onClose={() => setReceiptOpen(false)}
         title={t("Reçu de transaction", "Deal receipt")}
       >
-        <div className="rounded-xl border border-dashed border-line p-4 text-xs dark:border-night-lineStrong">
+        <div className="print-area rounded-xl border border-dashed border-line p-4 text-xs dark:border-night-lineStrong">
           <p className="text-center text-sm font-extrabold tracking-tight">
             NIMBA MONEY
           </p>
@@ -417,12 +417,7 @@ function RequestStatusInner() {
             ))}
           </dl>
         </div>
-        <Button
-          full
-          variant="blue"
-          className="mt-4"
-          onClick={() => toast(t("Impression lancée (prototype)", "Printing (prototype)"), "info")}
-        >
+        <Button full variant="blue" className="mt-4" onClick={() => window.print()}>
           <Printer className="h-4 w-4" aria-hidden />
           {t("Imprimer / Télécharger PDF", "Print / Download PDF")}
         </Button>

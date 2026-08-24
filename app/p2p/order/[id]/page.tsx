@@ -541,7 +541,7 @@ function OrderInner() {
 
       {/* receipt */}
       <Modal open={receiptOpen} onClose={() => setReceiptOpen(false)} title={t("Reçu d'ordre P2P", "P2P order receipt")}>
-        <div className="rounded-xl border border-dashed border-line p-4 text-xs dark:border-night-lineStrong">
+        <div className="print-area rounded-xl border border-dashed border-line p-4 text-xs dark:border-night-lineStrong">
           <p className="text-center text-sm font-extrabold tracking-tight">NIMBA MONEY · P2P</p>
           <p className="text-center text-2xs text-ink-muted dark:text-[#8FA79C]">{base.id}</p>
           <dl className="mt-4 space-y-1.5">
@@ -561,7 +561,7 @@ function OrderInner() {
             ))}
           </dl>
         </div>
-        <Button full className="mt-4" onClick={() => toast(t("Impression lancée (démo)", "Printing (demo)"), "info")}>
+        <Button full className="mt-4" onClick={() => window.print()}>
           <Printer className="h-4 w-4" aria-hidden />
           {t("Imprimer / PDF", "Print / PDF")}
         </Button>

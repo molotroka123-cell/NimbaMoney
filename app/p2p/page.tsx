@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   RefreshCw,
@@ -14,6 +14,7 @@ import {
   Check,
   MessageCircle,
   Megaphone,
+  Star,
 } from "lucide-react";
 import { Card, Avatar, EmptyState, SkeletonRows, Sparkline, Tooltip } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
@@ -55,11 +56,35 @@ function P2PInner() {
   const [qf, setQf] = useState<QF>("best_match");
   const [loading, setLoading] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const [favs, setFavs] = useState<string[]>([]);
+  const [favOnly, setFavOnly] = useState(false);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    try {
+      setFavs(JSON.parse(window.localStorage.getItem("nimba.favs") ?? "[]"));
+    } catch { /* ignore */ }
+  }, []);
+
+  // gentle deterministic "live market" drift for the displayed rate
+  useEffect(() => {
+    const id = setInterval(() => setTick((n) => n + 1), 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  const toggleFav = (traderId: string) => {
+    setFavs((prev) => {
+      const next = prev.includes(traderId) ? prev.filter((x) => x !== traderId) : [...prev, traderId];
+      window.localStorage.setItem("nimba.favs", JSON.stringify(next));
+      return next;
+    });
+  };
 
   const amountGnf = parseAmount(amount) || 10_000_000;
 
   const rows = useMemo(() => {
     let xs = offers.filter((o) => o.side === side);
+    if (favOnly) xs = xs.filter((o) => favs.includes(o.traderId));
     if (method !== "all") xs = xs.filter((o) => o.method === method);
     xs = xs.filter((o) => amountGnf >= o.minGnf && amountGnf <= o.maxGnf);
     const tr = (o: P2POffer) => getTrader(o.traderId)!;
@@ -88,7 +113,7 @@ function P2PInner() {
       }
     }
     return xs.slice(0, 12);
-  }, [side, method, amountGnf, qf]);
+  }, [side, method, amountGnf, qf, favOnly, favs]);
 
   const a = assetInfo(asset);
   const assetPrice = (gnf: number) => Math.round(gnf * a.mul * 100) / 100;
@@ -99,7 +124,10 @@ function P2PInner() {
     return px >= 1_000_000 ? formatGnfCompact(px, lang).replace(" GNF", "") : formatNumber(px);
   };
   const bestPrice = rows[0]?.priceGnf ?? 8_640;
-  const receiveAsset = amountGnf / assetPrice(bestPrice);
+  // deterministic ±5 GNF drift so the quote feels live without real data
+  const liveDrift = Math.round(Math.sin(tick * 1.7) * 5);
+  const liveRate = bestPrice + liveDrift;
+  const receiveAsset = amountGnf / assetPrice(liveRate);
 
   const refresh = () => {
     setLoading(true);
@@ -195,6 +223,22 @@ function P2PInner() {
                     GNF
                   </span>
                 </div>
+                <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  {([1_000_000, 5_000_000, 10_000_000, 25_000_000] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setAmount(formatAmountInput(String(v)))}
+                      className={classNames(
+                        "rounded-md border px-2 py-1 text-2xs font-bold tabular-nums transition-colors",
+                        amountGnf === v
+                          ? "border-brand-500 bg-brand-50 text-brand-700 dark:bg-brand-900/50 dark:text-brand-200"
+                          : "border-line text-ink-muted hover:border-brand-400 hover:text-ink dark:border-night-lineStrong dark:text-[#8FA79C]"
+                      )}
+                    >
+                      {v / 1_000_000}M
+                    </button>
+                  ))}
+                </div>
                 <p className="mt-1 text-2xs text-ink-muted dark:text-[#8FA79C]">
                   {t("Solde :", "Balance:")} {formatGnf(wallets[0].balance)}
                 </p>
@@ -223,8 +267,24 @@ function P2PInner() {
                     ))}
                   </select>
                 </div>
-                <p className="mt-1 text-2xs text-ink-muted dark:text-[#8FA79C]">
-                  {t("Taux", "Rate")} : 1 {asset} ≈ {fmtPrice(bestPrice)} GNF · {a.network}
+                <p className="mt-1 flex items-center gap-1.5 text-2xs text-ink-muted dark:text-[#8FA79C]">
+                  <span className="relative flex h-1.5 w-1.5" aria-hidden>
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-500" />
+                  </span>
+                  <span>
+                    {t("Taux en direct", "Live rate")} : 1 {asset} ≈{" "}
+                    <span
+                      className={classNames(
+                        "font-bold tabular-nums transition-colors",
+                        liveDrift > 0 && "text-brand-600 dark:text-brand-300",
+                        liveDrift < 0 && "text-danger"
+                      )}
+                    >
+                      {fmtPrice(liveRate)}
+                    </span>{" "}
+                    GNF · {a.network}
+                  </span>
                 </p>
               </div>
 
@@ -284,6 +344,16 @@ function P2PInner() {
                 {lang === "fr" ? f.fr : f.en}
               </button>
             ))}
+            <button
+              role="tab"
+              aria-selected={favOnly}
+              onClick={() => setFavOnly((v) => !v)}
+              className={classNames("chip shrink-0", favOnly && "chip-active")}
+            >
+              <Star className={classNames("h-3 w-3", favOnly && "fill-current")} aria-hidden />
+              {t("Favoris", "Favorites")}
+              {favs.length > 0 && <span className="tabular-nums">({favs.length})</span>}
+            </button>
           </div>
 
           <Card>
@@ -315,7 +385,7 @@ function P2PInner() {
                     </thead>
                     <tbody className="divide-y divide-line dark:divide-night-line">
                       {rows.map((o, i) => (
-                        <OfferRow key={o.id} offer={o} amountGnf={amountGnf} highlight={i === 0 && qf === "best_match"} onOpen={() => openOrder(o)} side={side} asset={asset} />
+                        <OfferRow key={o.id} offer={o} amountGnf={amountGnf} highlight={i === 0 && qf === "best_match"} onOpen={() => openOrder(o)} side={side} asset={asset} fav={favs.includes(o.traderId)} onFav={() => toggleFav(o.traderId)} />
                       ))}
                     </tbody>
                   </table>
@@ -323,7 +393,7 @@ function P2PInner() {
                 {/* mobile */}
                 <ul className="divide-y divide-line md:hidden dark:divide-night-line">
                   {rows.map((o) => (
-                    <OfferCardMobile key={o.id} offer={o} amountGnf={amountGnf} onOpen={() => openOrder(o)} side={side} asset={asset} />
+                    <OfferCardMobile key={o.id} offer={o} amountGnf={amountGnf} onOpen={() => openOrder(o)} side={side} asset={asset} fav={favs.includes(o.traderId)} onFav={() => toggleFav(o.traderId)} />
                   ))}
                 </ul>
                 <div className="border-t border-line p-3 dark:border-night-line">
@@ -525,6 +595,8 @@ function OfferRow({
   onOpen,
   side,
   asset,
+  fav,
+  onFav,
 }: {
   offer: P2POffer;
   amountGnf: number;
@@ -532,6 +604,8 @@ function OfferRow({
   onOpen: () => void;
   side: Side;
   asset: DemoAssetId;
+  fav: boolean;
+  onFav: () => void;
 }) {
   const { lang, t } = useI18n();
   const tr = getTrader(o.traderId)!;
@@ -548,6 +622,17 @@ function OfferRow({
     >
       <td className="td-cell">
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={onFav}
+            aria-label={fav ? t("Retirer des favoris", "Remove from favorites") : t("Ajouter aux favoris", "Add to favorites")}
+            aria-pressed={fav}
+            className={classNames(
+              "shrink-0 rounded-md p-1 transition-colors",
+              fav ? "text-amber-500 hover:text-amber-600" : "text-ink-faint hover:text-amber-500"
+            )}
+          >
+            <Star className={classNames("h-4 w-4", fav && "fill-current")} aria-hidden />
+          </button>
           <Avatar initials={tr.initials} hue={tr.hue} />
           <div className="min-w-0">
             <p className="flex items-center gap-1.5 text-[13px] font-bold">
@@ -600,12 +685,16 @@ function OfferCardMobile({
   onOpen,
   side,
   asset,
+  fav,
+  onFav,
 }: {
   offer: P2POffer;
   amountGnf: number;
   onOpen: () => void;
   side: Side;
   asset: DemoAssetId;
+  fav: boolean;
+  onFav: () => void;
 }) {
   const { lang, t } = useI18n();
   const tr = getTrader(o.traderId)!;
@@ -621,6 +710,17 @@ function OfferCardMobile({
           <p className="flex items-center gap-1.5 text-[13px] font-bold">
             {tr.name}
             {tr.verified && <ShieldCheck className="h-3.5 w-3.5 text-brand-500" aria-hidden />}
+            <button
+              onClick={onFav}
+              aria-label={fav ? t("Retirer des favoris", "Remove from favorites") : t("Ajouter aux favoris", "Add to favorites")}
+              aria-pressed={fav}
+              className={classNames(
+                "ml-auto -m-1.5 rounded-md p-1.5",
+                fav ? "text-amber-500" : "text-ink-faint"
+              )}
+            >
+              <Star className={classNames("h-4 w-4", fav && "fill-current")} aria-hidden />
+            </button>
           </p>
           <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
             {tr.trades.toLocaleString("fr-FR")} trades · {tr.completionPct}% ·{" "}

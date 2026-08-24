@@ -11,6 +11,8 @@ import {
   type SidebarTone,
 } from "@/components/layout/Sidebar";
 import { useI18n } from "@/lib/i18n";
+import { GlobalSearch } from "@/components/layout/GlobalSearch";
+import { Notifications } from "@/components/layout/Notifications";
 import { useTheme } from "@/lib/theme";
 import { Button } from "@/components/ui/Button";
 import { classNames } from "@/lib/format";
@@ -124,6 +126,8 @@ export function ProductShell({
           {switcher}
 
           <div className="ml-auto flex items-center gap-1.5">
+            <GlobalSearch />
+            <Notifications />
             <span
               className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-2xs font-bold text-amber-800 sm:hidden dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300"
               title="Investor demo"
@@ -172,7 +176,7 @@ export function ProductShell({
           </div>
         </header>
 
-        <main className="flex-1 pb-20 lg:pb-8">{children}</main>
+        <main className="page-fade flex-1 pb-20 lg:pb-8">{children}</main>
 
         {/* mobile bottom navigation */}
         <nav

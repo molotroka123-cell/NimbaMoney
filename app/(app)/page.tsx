@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/Button";
 import { Pill, VerificationBadge, Rating } from "@/components/ui/Badge";
 import { statusPill } from "@/components/requests/status";
 import { Footer } from "@/components/marketplace/BelowFold";
+import { ActivityFeed } from "@/components/home/ActivityFeed";
 import { useI18n } from "@/lib/i18n";
 import { providers, getProvider, getProviderById } from "@/data/mock/providers";
 import { offers, orders, getTrader } from "@/data/mock/p2p";
@@ -229,6 +230,9 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* live ecosystem activity (demo) */}
+      <ActivityFeed />
 
       {/* how the ecosystem fits together */}
       <section>
