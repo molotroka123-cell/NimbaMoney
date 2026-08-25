@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Megaphone,
   Star,
+  Medal,
 } from "lucide-react";
 import { Card, Avatar, EmptyState, SkeletonRows, Sparkline, Tooltip } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
@@ -42,6 +43,27 @@ type Side = "buy" | "sell";
 type QF = "best_match" | "best_price" | "fast_response" | "high_completion";
 
 const methods: (P2PMethodId | "all")[] = ["all", "orange", "mtn", "wave", "bank", "cash"];
+
+/** Trader tier from lifetime trade count — shown as a small medal next to the name. */
+function traderTier(trades: number) {
+  if (trades >= 2_000) return { fr: "Or", en: "Gold", cls: "text-amber-500" };
+  if (trades >= 1_000) return { fr: "Argent", en: "Silver", cls: "text-slate-400" };
+  return { fr: "Bronze", en: "Bronze", cls: "text-orange-700 dark:text-orange-500" };
+}
+
+function TierMedal({ trades }: { trades: number }) {
+  const { lang, t } = useI18n();
+  const tier = traderTier(trades);
+  return (
+    <span
+      className={classNames("inline-flex items-center", tier.cls)}
+      title={`${t("Niveau", "Tier")} ${lang === "fr" ? tier.fr : tier.en}`}
+      aria-label={`${t("Niveau", "Tier")} ${lang === "fr" ? tier.fr : tier.en}`}
+    >
+      <Medal className="h-3.5 w-3.5" aria-hidden />
+    </span>
+  );
+}
 
 function P2PInner() {
   const { lang, t } = useI18n();
@@ -640,6 +662,7 @@ function OfferRow({
               {tr.verified && (
                 <ShieldCheck className="h-3.5 w-3.5 text-brand-500" aria-label={t("vérifié", "verified")} />
               )}
+              <TierMedal trades={tr.trades} />
               {highlight && <Pill tone="green">{t("Meilleur choix", "Best match")}</Pill>}
             </p>
             <p className="flex flex-wrap items-center gap-x-1.5 text-2xs text-ink-muted dark:text-[#8FA79C]">
@@ -710,6 +733,7 @@ function OfferCardMobile({
           <p className="flex items-center gap-1.5 text-[13px] font-bold">
             {tr.name}
             {tr.verified && <ShieldCheck className="h-3.5 w-3.5 text-brand-500" aria-hidden />}
+            <TierMedal trades={tr.trades} />
             <button
               onClick={onFav}
               aria-label={fav ? t("Retirer des favoris", "Remove from favorites") : t("Ajouter aux favoris", "Add to favorites")}
