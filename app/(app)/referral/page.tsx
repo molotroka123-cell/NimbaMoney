@@ -39,7 +39,7 @@ interface Invitee {
 const invitees: Invitee[] = [
   { name: "Alpha Oumar Barry", initials: "AB", hue: 150, phone: "+224 62• •• ••34", date: "12 août 2026", dateEn: "Aug 12, 2026", status: "rewarded" },
   { name: "Kadiatou Sylla", initials: "KS", hue: 200, phone: "+224 66• •• ••81", date: "9 août 2026", dateEn: "Aug 9, 2026", status: "rewarded" },
-  { name: "Sékou Condé", initials: "SC", hue: 30, phone: "+224 61• •• ••07", date: "2 août 2026", dateEn: "Aug 2, 2026", status: "rewarded" },
+  { name: "Lansana Condé", initials: "LC", hue: 30, phone: "+224 61• •• ••07", date: "2 août 2026", dateEn: "Aug 2, 2026", status: "rewarded" },
   { name: "Mariama Diallo", initials: "MD", hue: 280, phone: "+224 62• •• ••59", date: "28 juil. 2026", dateEn: "Jul 28, 2026", status: "rewarded" },
   { name: "Ousmane Touré", initials: "OT", hue: 90, phone: "+224 65• •• ••22", date: "21 juil. 2026", dateEn: "Jul 21, 2026", status: "rewarded" },
   { name: "Fatoumata Camara", initials: "FC", hue: 330, phone: "+224 66• •• ••48", date: "18 août 2026", dateEn: "Aug 18, 2026", status: "pending" },

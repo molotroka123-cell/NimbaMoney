@@ -12,6 +12,8 @@ import {
   AlertTriangle,
   User,
   LifeBuoy,
+  QrCode,
+  Gift,
 } from "lucide-react";
 import { ProductShell, ProductSwitcher } from "@/components/layout/ProductShell";
 import type { NavSection } from "@/components/layout/Sidebar";
@@ -29,8 +31,10 @@ const sections: NavSection[] = [
       { href: "/p2p/sell", labelFr: "Vendre", labelEn: "Sell", icon: TrendingDown },
       { href: "/p2p/orders", labelFr: "Ordres", labelEn: "Orders", icon: FileText },
       { href: "/p2p/wallets", labelFr: "Portefeuilles", labelEn: "Wallets", icon: Wallet },
+      { href: "/p2p/pay", labelFr: "Payer (QR)", labelEn: "Pay (QR)", icon: QrCode },
       { href: "/p2p/messages", labelFr: "Messages", labelEn: "Messages", icon: MessageSquare, badge: unread },
-      { href: "/p2p/disputes", labelFr: "Litiges", labelEn: "Disputes", icon: AlertTriangle },
+      { href: "/p2p/disputes", labelFr: "Arbitrage", labelEn: "Arbitration", icon: AlertTriangle },
+      { href: "/referral", labelFr: "Parrainage", labelEn: "Referral", icon: Gift },
       { href: "/account/profile", labelFr: "Profil", labelEn: "Profile", icon: User },
       { href: "/account/support", labelFr: "Support", labelEn: "Support", icon: LifeBuoy },
     ],

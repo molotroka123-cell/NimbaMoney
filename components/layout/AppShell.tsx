@@ -16,6 +16,7 @@ import {
   BadgeCheck,
   RadioTower,
   ShieldCheck,
+  Gift,
 } from "lucide-react";
 import {
   BrandBlock,
@@ -38,6 +39,8 @@ const sections: NavSection[] = [
       { href: "/marketplace", labelFr: "Marketplace", labelEn: "Marketplace", icon: Store },
       { href: "/messages", labelFr: "Messages", labelEn: "Messages", icon: MessageSquare, badge: unread },
       { href: "/verification", labelFr: "Vérification", labelEn: "Verification", icon: BadgeCheck },
+      { href: "/kyc", labelFr: "Mon KYC", labelEn: "My KYC", icon: ShieldCheck },
+      { href: "/referral", labelFr: "Parrainage", labelEn: "Referral", icon: Gift },
       { href: "/account/profile", labelFr: "Profil", labelEn: "Profile", icon: User },
       { href: "/account/support", labelFr: "Support", labelEn: "Support", icon: LifeBuoy },
     ],

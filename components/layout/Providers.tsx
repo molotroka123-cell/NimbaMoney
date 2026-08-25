@@ -7,6 +7,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { DesktopModeSwitch } from "@/components/layout/DesktopModeSwitch";
 import { DemoTour } from "@/components/demo/DemoTour";
 import { AccessGate } from "@/components/layout/AccessGate";
+import { WhatsNew } from "@/components/layout/WhatsNew";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           {children}
           <DesktopModeSwitch />
           <DemoTour />
+          <WhatsNew />
           <AccessGate />
         </ToastProvider>
       </I18nProvider>

@@ -13,6 +13,9 @@ import {
   Bookmark,
   MessageSquare,
   LifeBuoy,
+  Briefcase,
+  Send,
+  MapPin,
 } from "lucide-react";
 import { ProductShell, ProductSwitcher } from "@/components/layout/ProductShell";
 import type { NavSection } from "@/components/layout/Sidebar";
@@ -27,6 +30,9 @@ const sections: NavSection[] = [
       { href: "/", labelFr: "Accueil", labelEn: "Home", icon: Home, exact: true },
       { href: "/marketplace", labelFr: "Marketplace", labelEn: "Marketplace", icon: Store, exact: true },
       { href: "/marketplace/providers", labelFr: "Partenaires", labelEn: "Providers", icon: Building2 },
+      { href: "/marketplace/map", labelFr: "Points cash", labelEn: "Cash points", icon: MapPin },
+      { href: "/marketplace/import-fx", labelFr: "Import FX (Pro)", labelEn: "Import FX (Pro)", icon: Briefcase },
+      { href: "/marketplace/diaspora", labelFr: "Envoyer en Guinée", labelEn: "Send to Guinea", icon: Send },
       { href: "/marketplace/requests", labelFr: "Mes demandes", labelEn: "My requests", icon: FileText },
       { href: "/marketplace/saved", labelFr: "Enregistrés", labelEn: "Saved", icon: Bookmark },
       { href: "/marketplace/messages", labelFr: "Messages", labelEn: "Messages", icon: MessageSquare, badge: unread },

@@ -61,6 +61,14 @@ export function GlobalSearch() {
       { id: "pg4", label: t("Tableau de bord partenaire", "Provider dashboard"), sub: "/partner", href: "/partner", kind: "page" },
       { id: "pg5", label: t("Console admin", "Admin console"), sub: "/admin", href: "/admin", kind: "page" },
       { id: "pg6", label: "Ops / Dispatch", sub: "/ops", href: "/ops", kind: "page" },
+      { id: "pg7", label: t("Import FX (Pro)", "Import FX (Pro)"), sub: "/marketplace/import-fx", href: "/marketplace/import-fx", kind: "page" },
+      { id: "pg8", label: t("Envoyer en Guinée", "Send to Guinea"), sub: "/marketplace/diaspora", href: "/marketplace/diaspora", kind: "page" },
+      { id: "pg9", label: t("Points cash (carte)", "Cash points map"), sub: "/marketplace/map", href: "/marketplace/map", kind: "page" },
+      { id: "pg10", label: t("Vérification KYC", "KYC verification"), sub: "/kyc", href: "/kyc", kind: "page" },
+      { id: "pg11", label: t("Payer un commerçant (QR)", "Pay a merchant (QR)"), sub: "/p2p/pay", href: "/p2p/pay", kind: "page" },
+      { id: "pg12", label: t("Parrainage", "Referral"), sub: "/referral", href: "/referral", kind: "page" },
+      { id: "pg13", label: t("Coffre USD", "USD Vault"), sub: "/p2p/wallets", href: "/p2p/wallets", kind: "page" },
+      { id: "pg14", label: t("Centre d'arbitrage", "Arbitration center"), sub: "/p2p/disputes", href: "/p2p/disputes", kind: "page" },
     ],
     [t]
   );
