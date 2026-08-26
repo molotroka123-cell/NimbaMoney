@@ -404,8 +404,8 @@ export const wallets = [
 ];
 
 export const walletHistory = [
-  { id: "wt1", label: "Achat USDT — ORD-7298", delta: "+579,71 USDT", when: "18 août 16:34" },
-  { id: "wt3", label: "Achat USDT — ORD-7291", delta: "+209,06 USDT", when: "17 août 12:12" },
-  { id: "wt2", label: "Retrait USDT (TRC20)", delta: "−400,00 USDT", when: "17 août 09:20" },
-  { id: "wt4", label: "Dépôt GNF — Orange Money", delta: "+5 000 000 GNF", when: "16 août 08:05" },
+  { id: "wt1", label: "Achat USDT — ORD-7298", labelEn: "USDT purchase — ORD-7298", delta: "+579,71 USDT", when: "18 août 16:34", whenEn: "Aug 18, 16:34" },
+  { id: "wt3", label: "Achat USDT — ORD-7291", labelEn: "USDT purchase — ORD-7291", delta: "+209,06 USDT", when: "17 août 12:12", whenEn: "Aug 17, 12:12" },
+  { id: "wt2", label: "Retrait USDT (TRC20)", labelEn: "USDT withdrawal (TRC20)", delta: "−400,00 USDT", when: "17 août 09:20", whenEn: "Aug 17, 09:20" },
+  { id: "wt4", label: "Dépôt GNF — Orange Money", labelEn: "GNF deposit — Orange Money", delta: "+5 000 000 GNF", when: "16 août 08:05", whenEn: "Aug 16, 08:05" },
 ];

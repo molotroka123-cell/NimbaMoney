@@ -69,9 +69,10 @@ export default function KycPage() {
   const scanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wizardRef = useRef<HTMLDivElement>(null);
 
-  // restore persisted step on mount
+  // restore persisted step on mount — scan/proof state is not persisted, so
+  // never land past step 1 or the review screen would accept an empty file
   useEffect(() => {
-    setStep(readStoredStep());
+    setStep(Math.min(readStoredStep(), 1) as WizardStep);
     return () => {
       if (scanTimer.current) clearTimeout(scanTimer.current);
     };
@@ -91,6 +92,10 @@ export default function KycPage() {
   };
 
   const resetWizard = () => {
+    if (scanTimer.current) {
+      clearTimeout(scanTimer.current);
+      scanTimer.current = null;
+    }
     goToStep(0);
     setDocType("cni");
     setScanning(false);
@@ -545,7 +550,7 @@ export default function KycPage() {
                       {[
                         { k: t("Nom", "Name"), v: "DIALLO Mohamed" },
                         { k: t("N° NIN", "NIN no."), v: "1987-XXXX-XXXX" },
-                        { k: t("Née", "Born"), v: "12/04/1992" },
+                        { k: t("Naissance", "Born"), v: "12/04/1992" },
                         { k: t("Expire", "Expires"), v: "2033" },
                       ].map(({ k, v }) => (
                         <div key={k} className="flex items-baseline justify-between gap-2 sm:block">
@@ -716,7 +721,7 @@ export default function KycPage() {
                     <Button variant="ghost" onClick={() => goToStep(2)}>
                       {t("Retour", "Back")}
                     </Button>
-                    <Button onClick={submitApplication}>
+                    <Button onClick={submitApplication} disabled={!scanned || !proofUploaded}>
                       <Send className="h-4 w-4" aria-hidden />
                       {t("Envoyer la demande (démo)", "Submit application (demo)")}
                     </Button>

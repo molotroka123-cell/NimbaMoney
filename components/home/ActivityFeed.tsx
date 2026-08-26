@@ -14,14 +14,18 @@ export function ActivityFeed() {
   const [fade, setFade] = useState(true);
 
   useEffect(() => {
+    let fadeId: ReturnType<typeof setTimeout> | undefined;
     const id = setInterval(() => {
       setFade(false);
-      setTimeout(() => {
+      fadeId = setTimeout(() => {
         setIdx((i) => (i + 1) % liveActivity.length);
         setFade(true);
       }, 250);
     }, 3500);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      if (fadeId) clearTimeout(fadeId);
+    };
   }, []);
 
   // current + the two previous items, newest first

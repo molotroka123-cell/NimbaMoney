@@ -405,8 +405,20 @@ export default function ImportFxPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end">
-                <Button variant="blue" disabled={amountUsd <= 0} onClick={() => setStep(2)}>
+              <div className="flex items-center justify-end gap-3">
+                {totalCostGnf > DAILY_LIMIT_GNF && (
+                  <p className="text-2xs font-semibold text-danger">
+                    {t(
+                      "Dépasse la limite journalière de 500M GNF.",
+                      "Exceeds the 500M GNF daily limit."
+                    )}
+                  </p>
+                )}
+                <Button
+                  variant="blue"
+                  disabled={amountUsd <= 0 || totalCostGnf > DAILY_LIMIT_GNF}
+                  onClick={() => setStep(2)}
+                >
                   {t("Continuer", "Continue")}
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Button>
@@ -441,7 +453,7 @@ export default function ImportFxPage() {
                         <p className="text-[13px] font-bold">{tr.name}</p>
                         <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                           {t("Tranche", "Tranche")} {i + 1} ·{" "}
-                          {t("frais", "fee")} {tr.feePct.toFixed(1).replace(".", ",")}%
+                          {t("frais", "fee")} {t(tr.feePct.toFixed(1).replace(".", ","), tr.feePct.toFixed(1))}%
                         </p>
                       </div>
                       <div className="text-right">
@@ -654,26 +666,42 @@ function SuccessCard({ onReset, split }: { onReset: () => void; split: Tranche[]
   const { t } = useI18n();
   const { toast } = useToast();
 
-  const t1 = split[0];
+  // Build the timeline from the actual split: first tranche settled, the
+  // following one (if any) in progress — never name a provider not in the deal.
   const stages: { label: string; state: "done" | "current" | "pending" }[] = [
     { label: t("Demande créée", "Request created"), state: "done" },
-    {
-      label: t("Kaba Trade a accepté (2 min)", "Kaba Trade accepted (2 min)"),
-      state: "done",
-    },
-    {
-      label: t(
-        `Tranche 1 réglée — ${formatNumber(t1?.amountUsd ?? 20_000)} USD`,
-        `Tranche 1 settled — ${formatNumber(t1?.amountUsd ?? 20_000)} USD`
-      ),
-      state: "done",
-    },
-    {
-      label: t("Tymur MrSwap a accepté", "Tymur MrSwap accepted"),
-      state: "current",
-    },
-    { label: t("Tranche 2 en cours…", "Tranche 2 in progress…"), state: "pending" },
   ];
+  split.forEach((tr, i) => {
+    if (i === 0) {
+      stages.push(
+        {
+          label: t(`${tr.name} a accepté (2 min)`, `${tr.name} accepted (2 min)`),
+          state: "done",
+        },
+        {
+          label: t(
+            `Tranche 1 réglée — ${formatNumber(tr.amountUsd)} USD`,
+            `Tranche 1 settled — ${formatNumber(tr.amountUsd)} USD`
+          ),
+          state: "done",
+        }
+      );
+    } else {
+      stages.push(
+        { label: t(`${tr.name} a accepté`, `${tr.name} accepted`), state: "current" },
+        {
+          label: t(
+            `Tranche ${i + 1} en cours — ${formatNumber(tr.amountUsd)} USD…`,
+            `Tranche ${i + 1} in progress — ${formatNumber(tr.amountUsd)} USD…`
+          ),
+          state: "pending",
+        }
+      );
+    }
+  });
+  if (split.length === 1) {
+    stages.push({ label: t("Reçu disponible", "Receipt available"), state: "current" });
+  }
 
   return (
     <Card className="card-pad">

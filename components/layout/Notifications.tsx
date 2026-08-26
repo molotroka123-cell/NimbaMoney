@@ -33,12 +33,16 @@ export function Notifications() {
   const markAll = () => {
     const ids = notifications.map((n) => n.id);
     setRead(ids);
-    window.localStorage.setItem("nimba.notifs.read", JSON.stringify(ids));
+    try {
+      window.localStorage.setItem("nimba.notifs.read", JSON.stringify(ids));
+    } catch { /* ignore */ }
   };
   const markOne = (id: string) => {
     const next = Array.from(new Set([...read, id]));
     setRead(next);
-    window.localStorage.setItem("nimba.notifs.read", JSON.stringify(next));
+    try {
+      window.localStorage.setItem("nimba.notifs.read", JSON.stringify(next));
+    } catch { /* ignore */ }
   };
 
   const kindIcon = { p2p: ArrowLeftRight, market: Store, system: Info } as const;

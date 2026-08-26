@@ -59,9 +59,9 @@ interface LeaderRow {
 const leaderboard: LeaderRow[] = [
   { rank: 1, name: "Mamadou B.", initials: "MB", hue: 20, invites: 18, gainsGnf: 360_000 },
   { rank: 2, name: "Aïssatou C.", initials: "AC", hue: 300, invites: 12, gainsGnf: 240_000 },
-  { rank: 3, name: "Mohamed D.", initials: "MD", hue: 150, invites: 7, gainsGnf: 140_000, you: true },
-  { rank: 4, name: "Ibrahima S.", initials: "IS", hue: 220, invites: 6, gainsGnf: 120_000 },
-  { rank: 5, name: "Fanta K.", initials: "FK", hue: 45, invites: 5, gainsGnf: 100_000 },
+  { rank: 3, name: "Mohamed D.", initials: "MD", hue: 150, invites: 7, gainsGnf: 100_000, you: true },
+  { rank: 4, name: "Ibrahima S.", initials: "IS", hue: 220, invites: 6, gainsGnf: 100_000 },
+  { rank: 5, name: "Fanta K.", initials: "FK", hue: 45, invites: 5, gainsGnf: 80_000 },
 ];
 
 export default function ReferralPage() {
@@ -71,19 +71,19 @@ export default function ReferralPage() {
   const copyCode = async () => {
     try {
       await navigator.clipboard.writeText(REFERRAL_CODE);
+      toast(t("Code copié", "Code copied"));
     } catch {
-      // demo — clipboard may be unavailable
+      toast(t(`Copiez le code : ${REFERRAL_CODE}`, `Copy the code: ${REFERRAL_CODE}`), "info");
     }
-    toast(t("Code copié", "Code copied"));
   };
 
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(REFERRAL_LINK);
+      toast(t("Lien copié", "Link copied"));
     } catch {
-      // demo — clipboard may be unavailable
+      toast(t(`Copiez le lien : ${REFERRAL_LINK}`, `Copy the link: ${REFERRAL_LINK}`), "info");
     }
-    toast(t("Lien copié", "Link copied"));
   };
 
   const shareWhatsApp = () => {
@@ -195,7 +195,7 @@ export default function ReferralPage() {
         />
         <StatsCard
           label={t("Gains totaux", "Total earnings")}
-          value={formatGnf(140_000)}
+          value={formatGnf(100_000)}
           icon={<Wallet className="h-4 w-4" aria-hidden />}
         />
       </div>

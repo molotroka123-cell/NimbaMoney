@@ -14,6 +14,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // h-4.5/w-4.5 (18px) icons are used across the app; not in Tailwind's
+      // default spacing scale, so without this they fall back to 24px
+      spacing: {
+        "4.5": "1.125rem",
+      },
       colors: {
         brand: {
           950: "#04211C", // darkest — sidebar bottom

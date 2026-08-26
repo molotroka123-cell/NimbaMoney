@@ -78,12 +78,20 @@ export function WhatsNew() {
   const touchX = useRef<number | null>(null);
 
   useEffect(() => {
+    // never fight the guided tour for the same corner: don't auto-open while a
+    // tour is active, and close if one starts
+    const onTour = () => setOpen(false);
+    window.addEventListener("nimba:start-tour", onTour);
+    let id: ReturnType<typeof setTimeout> | undefined;
     try {
-      if (!window.localStorage.getItem(KEY)) {
-        const id = setTimeout(() => setOpen(true), 1200);
-        return () => clearTimeout(id);
+      if (!window.localStorage.getItem(KEY) && window.localStorage.getItem("nimba.tour") === null) {
+        id = setTimeout(() => setOpen(true), 1200);
       }
     } catch { /* ignore */ }
+    return () => {
+      window.removeEventListener("nimba:start-tour", onTour);
+      if (id) clearTimeout(id);
+    };
   }, []);
 
   if (!open) return null;
@@ -150,7 +158,7 @@ export function WhatsNew() {
         </div>
 
         <div className="flex items-center justify-between px-4 pb-3 pt-2">
-          <div className="flex items-center gap-1.5" aria-hidden>
+          <div className="flex items-center gap-1.5">
             {slides.map((_, d) => (
               <button
                 key={d}

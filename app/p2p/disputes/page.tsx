@@ -26,7 +26,8 @@ export default function P2PDisputesPage() {
   const { toast } = useToast();
   const disputed = orders.filter((o) => o.status === "disputed");
   const [openId, setOpenId] = useState<string | null>(disputed[0]?.id ?? null);
-  const [extraEvidence, setExtraEvidence] = useState<string[]>([]);
+  // evidence added in this session, keyed per case
+  const [extraEvidence, setExtraEvidence] = useState<Record<string, string[]>>({});
 
   return (
     <div className="space-y-4 p-4 lg:p-6">
@@ -53,7 +54,7 @@ export default function P2PDisputesPage() {
         const evidence = [
           t("reçu-orange-money.pdf", "orange-money-receipt.pdf"),
           t("capture-virement.png", "transfer-screenshot.png"),
-          ...extraEvidence,
+          ...(extraEvidence[o.id] ?? []),
         ];
         return (
           <Card key={o.id} className="overflow-hidden">
@@ -145,11 +146,9 @@ export default function P2PDisputesPage() {
                         size="sm"
                         className="mt-2"
                         onClick={() => {
-                          const name = t(
-                            `preuve-${extraEvidence.length + 3}.jpg`,
-                            `evidence-${extraEvidence.length + 3}.jpg`
-                          );
-                          setExtraEvidence((xs) => [...xs, name]);
+                          const count = (extraEvidence[o.id] ?? []).length;
+                          const name = t(`preuve-${count + 3}.jpg`, `evidence-${count + 3}.jpg`);
+                          setExtraEvidence((xs) => ({ ...xs, [o.id]: [...(xs[o.id] ?? []), name] }));
                           toast(t("Preuve ajoutée au dossier (démo)", "Evidence added to the case (demo)"), "info");
                         }}
                       >

@@ -191,11 +191,17 @@ function CompareInner() {
                             {t("Profil", "Profile")}
                           </Button>
                         </Link>
-                        <Link href={`/marketplace/providers/${p.slug}#request`}>
-                          <Button variant="blue" size="sm" full disabled={p.status === "offline"}>
+                        {p.status === "offline" ? (
+                          <Button variant="blue" size="sm" full disabled>
                             {t("Demander", "Request")}
                           </Button>
-                        </Link>
+                        ) : (
+                          <Link href={`/marketplace/providers/${p.slug}#request`}>
+                            <Button variant="blue" size="sm" full>
+                              {t("Demander", "Request")}
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </td>
                   ))}

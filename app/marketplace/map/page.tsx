@@ -67,6 +67,16 @@ function StoreGlyph() {
   );
 }
 
+/** Hours are stored in French ("Lun–Sam 08:00–19:00") — translate day abbreviations for EN. */
+function hoursLabel(hours: string, lang: string): string {
+  if (lang === "fr") return hours;
+  return hours
+    .replace("Lun", "Mon")
+    .replace("Ven", "Fri")
+    .replace("Sam", "Sat")
+    .replace("Dim", "Sun");
+}
+
 export default function CashPointsMapPage() {
   const { lang, t } = useI18n();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -354,7 +364,7 @@ export default function CashPointsMapPage() {
                 </p>
                 <p className="flex items-center gap-1.5">
                   <Clock className="h-3.5 w-3.5 shrink-0 text-mkt-500" aria-hidden />
-                  <span className="tabular-nums">{selected.point.hours}</span>
+                  <span className="tabular-nums">{hoursLabel(selected.point.hours, lang)}</span>
                   {selected.provider.status === "open" && (
                     <span className="inline-flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden />
@@ -453,7 +463,7 @@ export default function CashPointsMapPage() {
                   <Avatar initials={provider.logoInitials} hue={provider.logoHue} size="sm" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-semibold">{provider.name}</p>
-                    <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{d} · {point.hours}</p>
+                    <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{d} · {hoursLabel(point.hours, lang)}</p>
                   </div>
                   <div className="hidden items-center gap-1.5 sm:flex">
                     {point.hasUsdCash && <Pill tone="blue">USD</Pill>}

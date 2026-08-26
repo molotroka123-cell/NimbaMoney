@@ -32,7 +32,9 @@ export default function WalletsPage() {
   const saveCoffre = (on: boolean, amount: number) => {
     setCoffreOn(on);
     setCoffreAmount(amount);
-    window.localStorage.setItem("nimba.coffre", JSON.stringify({ on, amount }));
+    try {
+      window.localStorage.setItem("nimba.coffre", JSON.stringify({ on, amount }));
+    } catch { /* ignore */ }
   };
 
   const coffreBalance = 318.4; // USDT saved so far (demo)
@@ -219,8 +221,8 @@ export default function WalletsPage() {
           {walletHistory.map((h) => (
             <li key={h.id} className="flex items-center justify-between gap-3 py-2.5">
               <div>
-                <p className="text-xs font-semibold">{h.label}</p>
-                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{h.when}</p>
+                <p className="text-xs font-semibold">{t(h.label, h.labelEn)}</p>
+                <p className="text-2xs text-ink-muted dark:text-[#8FA79C]">{t(h.when, h.whenEn)}</p>
               </div>
               <span
                 className={

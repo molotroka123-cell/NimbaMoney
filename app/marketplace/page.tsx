@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -72,17 +72,23 @@ function MarketplaceInner() {
   const [visible, setVisible] = useState(8);
   const [cmp, setCmp] = useState<string[]>([]);
 
+  // the sidebar quick filters navigate to /marketplace?filter=… — keep state
+  // in sync when only the query string changes (the component doesn't remount)
+  useEffect(() => {
+    const f = sp.get("filter") as QF | null;
+    if (f) setQf(f);
+  }, [sp]);
+
   const amountGnf = parseAmount(amount) || 10_000_000;
 
   const toggleCmp = (id: string) => {
-    setCmp((prev) => {
-      if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= 3) {
-        toast(t("Maximum 3 partenaires à comparer.", "Compare up to 3 providers."), "info");
-        return prev;
-      }
-      return [...prev, id];
-    });
+    if (!cmp.includes(id) && cmp.length >= 3) {
+      toast(t("Maximum 3 partenaires à comparer.", "Compare up to 3 providers."), "info");
+      return;
+    }
+    setCmp((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   };
 
   const rows = useMemo(() => {
@@ -546,7 +552,7 @@ function MarketplaceInner() {
 
       {/* sticky compare bar */}
       {cmp.length > 0 && (
-        <div className="fixed inset-x-3 bottom-20 z-50 mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-navy-900/95 px-4 py-3 text-white shadow-overlay backdrop-blur lg:bottom-6">
+        <div className="fixed inset-x-3 bottom-20 z-[66] mx-auto flex max-w-xl items-center gap-3 rounded-2xl bg-navy-900/95 px-4 py-3 text-white shadow-overlay backdrop-blur lg:bottom-6">
           <Scale className="h-4 w-4 shrink-0 text-mkt-300" aria-hidden />
           <p className="min-w-0 flex-1 truncate text-xs">
             <span className="font-bold">{cmp.length}/3</span>{" "}
@@ -556,11 +562,17 @@ function MarketplaceInner() {
               .filter(Boolean)
               .join(" · ")}
           </p>
-          <Link href={`/marketplace/compare?ids=${cmp.join(",")}`}>
-            <Button variant="blue" size="sm" className="whitespace-nowrap" disabled={cmp.length < 2}>
+          {cmp.length >= 2 ? (
+            <Link href={`/marketplace/compare?ids=${cmp.join(",")}`}>
+              <Button variant="blue" size="sm" className="whitespace-nowrap">
+                {t("Comparer", "Compare")}
+              </Button>
+            </Link>
+          ) : (
+            <Button variant="blue" size="sm" className="whitespace-nowrap" disabled>
               {t("Comparer", "Compare")}
             </Button>
-          </Link>
+          )}
           <button
             onClick={() => setCmp([])}
             aria-label={t("Vider la sélection", "Clear selection")}

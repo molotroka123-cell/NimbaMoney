@@ -88,6 +88,13 @@ function P2PInner() {
     } catch { /* ignore */ }
   }, []);
 
+  // /p2p/buy and /p2p/sell redirect here with ?side= — keep the tab in sync
+  // when only the query string changes (no remount on same-route navigation)
+  useEffect(() => {
+    const s = sp.get("side") as Side | null;
+    if (s === "buy" || s === "sell") setSide(s);
+  }, [sp]);
+
   // gentle deterministic "live market" drift for the displayed rate
   useEffect(() => {
     const id = setInterval(() => setTick((n) => n + 1), 4000);
@@ -95,11 +102,13 @@ function P2PInner() {
   }, []);
 
   const toggleFav = (traderId: string) => {
-    setFavs((prev) => {
-      const next = prev.includes(traderId) ? prev.filter((x) => x !== traderId) : [...prev, traderId];
+    const next = favs.includes(traderId)
+      ? favs.filter((x) => x !== traderId)
+      : [...favs, traderId];
+    setFavs(next);
+    try {
       window.localStorage.setItem("nimba.favs", JSON.stringify(next));
-      return next;
-    });
+    } catch { /* ignore */ }
   };
 
   const amountGnf = parseAmount(amount) || 10_000_000;
@@ -145,7 +154,14 @@ function P2PInner() {
     const px = assetPrice(gnf);
     return px >= 1_000_000 ? formatGnfCompact(px, lang).replace(" GNF", "") : formatNumber(px);
   };
-  const bestPrice = rows[0]?.priceGnf ?? 8_640;
+  // best executable price among the filtered rows — independent of the active
+  // sort, so switching sorts doesn't re-base the displayed "live" rate
+  const bestPrice = rows.length
+    ? rows.reduce(
+        (m, o) => (side === "buy" ? Math.min(m, o.priceGnf) : Math.max(m, o.priceGnf)),
+        rows[0].priceGnf
+      )
+    : 8_640;
   // deterministic ±5 GNF drift so the quote feels live without real data
   const liveDrift = Math.round(Math.sin(tick * 1.7) * 5);
   const liveRate = bestPrice + liveDrift;

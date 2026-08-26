@@ -75,7 +75,8 @@ export default function DiasporaPage() {
   const amountEur = parseAmount(amountRaw);
   const feeEur = Math.round(amountEur * FEE_PCT) / 100; // 1.4% → 7 € for 500 €
   const netEur = Math.max(0, amountEur - feeEur);
-  const usdtGross = Math.round(amountEur * EUR_TO_USDT); // ≈ 541 USDT for 500 €
+  // net of fees, so the timeline reconciles with the payout amount
+  const usdtGross = Math.round(netEur * EUR_TO_USDT); // ≈ 533 USDT for 500 €
   const recipientGnf =
     Math.round((netEur * EUR_TO_USDT * USDT_TO_GNF) / 1000) * 1000;
 

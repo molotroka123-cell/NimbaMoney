@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BadgeCheck,
   Check,
@@ -84,11 +84,18 @@ export default function P2PPayPage() {
   const { toast } = useToast();
   const [step, setStep] = useState<Step>("scan");
   const [paying, setPaying] = useState(false);
+  const payTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (payTimer.current) clearTimeout(payTimer.current);
+    };
+  }, []);
 
   const pay = () => {
     if (paying) return;
     setPaying(true);
-    setTimeout(() => {
+    payTimer.current = setTimeout(() => {
       setPaying(false);
       setStep("success");
     }, 1200);
