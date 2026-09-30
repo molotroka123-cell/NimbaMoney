@@ -15,13 +15,20 @@ import {
   Scale,
   Gift,
   QrCode,
+  Smartphone,
+  Mic,
+  Timer,
+  Link2,
+  ShieldCheck,
 } from "lucide-react";
 import { classNames } from "@/lib/format";
 
-const KEY = "nimba.whatsnew.v3";
+const KEY = "nimba.whatsnew.v4";
 
 /** English-only, per user request: the swipeable release-notes popup. */
-const slides = [
+type Slide = { Icon: typeof Sparkles; title: string; text: string; href?: string; soon?: boolean };
+
+const slides: Slide[] = [
   {
     Icon: Briefcase,
     title: "Import FX for Business",
@@ -69,6 +76,36 @@ const slides = [
     title: "QR Merchant Pay",
     text: "Pay any verified merchant in USDT — they instantly receive GNF on mobile money.",
     href: "/p2p/pay",
+  },
+  {
+    Icon: Smartphone,
+    title: "Nimba USSD — no internet needed",
+    text: "Dial *555# on any basic phone to check rates, request liquidity and confirm deals. Built for Guinea's low-connectivity reality.",
+    soon: true,
+  },
+  {
+    Icon: Mic,
+    title: "Voice assistant in Soussou, Malinké & Pular",
+    text: "Speak your request in your own language: \"Change 5 million GNF to USDT\" — Nimba finds the best verified provider.",
+    soon: true,
+  },
+  {
+    Icon: Timer,
+    title: "Rate Lock & price alerts",
+    text: "Freeze a rate for 15 minutes before you pay, and get notified the moment USDT/GNF hits your target.",
+    soon: true,
+  },
+  {
+    Icon: Link2,
+    title: "Payment links for merchants",
+    text: "Create an invoice link, share it on WhatsApp, get paid in USDT or mobile money — no app needed for the payer.",
+    soon: true,
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Trust Score AI",
+    text: "Every trader gets a live risk score from behaviour, disputes and payment speed — fraud is flagged before an order starts.",
+    soon: true,
   },
 ];
 
@@ -127,7 +164,7 @@ export function WhatsNew() {
         <div className="flex items-center justify-between px-4 pt-3">
           <p className="flex items-center gap-1.5 text-2xs font-bold uppercase tracking-wider text-brand-300">
             <Sparkles className="h-3.5 w-3.5" aria-hidden />
-            What&apos;s new · {i + 1}/{slides.length}
+            {s.soon ? "Coming soon" : "What&apos;s new"} · {i + 1}/{slides.length}
           </p>
           <button
             onClick={close}
@@ -146,13 +183,19 @@ export function WhatsNew() {
             <div className="min-w-0">
               <p className="text-sm font-bold">{s.title}</p>
               <p className="mt-1 text-xs leading-relaxed text-white/75">{s.text}</p>
-              <Link
-                href={s.href}
-                onClick={close}
-                className="mt-1.5 inline-block text-xs font-bold text-brand-300 hover:text-brand-200"
-              >
-                Try it →
-              </Link>
+              {s.href ? (
+                <Link
+                  href={s.href}
+                  onClick={close}
+                  className="mt-1.5 inline-block text-xs font-bold text-brand-300 hover:text-brand-200"
+                >
+                  Try it →
+                </Link>
+              ) : (
+                <span className="mt-1.5 inline-block rounded-full bg-white/10 px-2 py-0.5 text-2xs font-bold text-brand-300">
+                  Roadmap
+                </span>
+              )}
             </div>
           </div>
         </div>
