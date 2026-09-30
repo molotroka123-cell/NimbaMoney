@@ -6,7 +6,7 @@ import { LogoMark } from "@/components/layout/Sidebar";
 import { demoAccessCode } from "@/config/product";
 import { classNames } from "@/lib/format";
 
-const KEY = "nimba.access";
+const KEY = "nimba.access.v2";
 
 /**
  * Investor access gate — a branded lock screen shown on first open.

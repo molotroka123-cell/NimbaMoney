@@ -71,9 +71,9 @@ export const districts = [
 
 /**
  * Investor-prototype access code for the client-side lock screen.
- * Compared lowercase; shown to investors as NIMBA2026.
+ * Compared lowercase; shown to investors as Invest77.
  */
-export const demoAccessCode = "nimba2026";
+export const demoAccessCode = "invest77";
 
 /** Ops / support contact used by the WhatsApp operational bridge. */
 export const supportWhatsApp = "+224 620 00 00 00";
