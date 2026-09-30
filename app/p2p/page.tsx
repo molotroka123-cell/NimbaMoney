@@ -162,7 +162,7 @@ function P2PInner() {
         (m, o) => (side === "buy" ? Math.min(m, o.priceGnf) : Math.max(m, o.priceGnf)),
         rows[0].priceGnf
       )
-    : 8_640;
+    : 8_790;
   // deterministic ±5 GNF drift so the quote feels live without real data
   const liveDrift = Math.round(Math.sin(tick * 1.7) * 5);
   const liveRate = bestPrice + liveDrift;

@@ -44,7 +44,7 @@ import {
 
 /* ── Demo data (inline mock — no shared files touched) ─────────────── */
 
-const DEMO_RATE_GNF_PER_USD = 8_560; // base rate (démo) → effective ≈ 8 700 GNF/USD with fees
+const DEMO_RATE_GNF_PER_USD = 8_710; // base rate (démo) → effective ≈ 8 850 GNF/USD with fees
 const DAILY_LIMIT_GNF = 500_000_000;
 const DEFAULT_AMOUNT_USD = 35_000;
 const INVOICE_REF = "INV-2026-0812";
@@ -95,7 +95,7 @@ type Rail = "usdt" | "bank" | "cash";
 /* ── Small helpers ─────────────────────────────────────────────────── */
 
 /** Demo multipliers vs USD for the selectable import currencies. */
-const CUR_MUL: Record<string, number> = { USD: 1, EUR: 1.0815, GBP: 1.269 };
+const CUR_MUL: Record<string, number> = { USD: 1, EUR: 1.1339, GBP: 1.3274 };
 
 /* ── Page ──────────────────────────────────────────────────────────── */
 

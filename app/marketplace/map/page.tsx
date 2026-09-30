@@ -91,7 +91,7 @@ export default function CashPointsMapPage() {
     return () => clearInterval(id);
   }, []);
   const liveUsd = (p: Provider, seed: number) => {
-    const base = p.liquidity.totalAvailableGnf / 8640;
+    const base = p.liquidity.totalAvailableGnf / 8790;
     return Math.round(base * (1 + 0.04 * Math.sin(tick * 1.3 + seed)) / 100) * 100;
   };
 
@@ -215,7 +215,7 @@ export default function CashPointsMapPage() {
             .slice(0, 6)
             .map((mp, i) => {
               const max = Math.max(...filtered.map((x) => x.provider.liquidity.totalAvailableGnf), 1);
-              const pct = Math.max(6, Math.round((liveUsd(mp.provider, i) * 8640 * 100) / (max * 1.05)));
+              const pct = Math.max(6, Math.round((liveUsd(mp.provider, i) * 8790 * 100) / (max * 1.05)));
               return (
                 <li key={mp.provider.id}>
                   <button
@@ -355,7 +355,7 @@ export default function CashPointsMapPage() {
                 >
                   {provider.status === "open" && (
                     <circle
-                      r={10 + Math.min(14, provider.liquidity.totalAvailableGnf / 8640 / 12_000)}
+                      r={10 + Math.min(14, provider.liquidity.totalAvailableGnf / 8790 / 12_000)}
                       className="animate-ping fill-emerald-400/25"
                       style={{ transformBox: "fill-box", transformOrigin: "center", animationDuration: "2.6s" }}
                       aria-hidden

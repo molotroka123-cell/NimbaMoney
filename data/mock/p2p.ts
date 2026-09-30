@@ -81,7 +81,7 @@ function offersFor(trader: P2PTrader, ti: number): P2POffer[] {
       id: `of-${trader.id}-b${k}`,
       traderId: trader.id,
       side: "buy",
-      priceGnf: 8_590 + ((ti * 7 + k * 11) % 12) * 10, // 8 590 – 8 700
+      priceGnf: 8_740 + ((ti * 7 + k * 11) % 12) * 10, // 8 740 – 8 850
       minGnf: 100_000 * (1 + (ti % 3)),
       maxGnf: [3_000_000, 5_000_000, 10_000_000, 20_000_000][(ti + k) % 4],
       availableUsdt: 400 + ((ti * 13 + k * 29) % 40) * 60,
@@ -94,7 +94,7 @@ function offersFor(trader: P2PTrader, ti: number): P2POffer[] {
       id: `of-${trader.id}-s${k}`,
       traderId: trader.id,
       side: "sell",
-      priceGnf: 8_500 + ((ti * 5 + k * 13) % 10) * 10, // 8 500 – 8 590
+      priceGnf: 8_650 + ((ti * 5 + k * 13) % 10) * 10, // 8 650 – 8 740
       minGnf: 100_000 * (1 + ((ti + 1) % 3)),
       maxGnf: [2_000_000, 5_000_000, 10_000_000][(ti + k) % 3],
       availableUsdt: 300 + ((ti * 17 + k * 23) % 35) * 50,
@@ -108,13 +108,13 @@ export const offers: P2POffer[] = traders.flatMap((tr, i) => offersFor(tr, i));
 
 // Pin the investor-demo offers to friendly values.
 const kabaBest = offers.find((o) => o.traderId === "t1" && o.side === "buy")!;
-kabaBest.priceGnf = 8_640;
+kabaBest.priceGnf = 8_790;
 kabaBest.method = "orange";
 kabaBest.minGnf = 200_000;
 kabaBest.maxGnf = 20_000_000;
 kabaBest.availableUsdt = 2_450;
 const tymurBest = offers.find((o) => o.traderId === "t2" && o.side === "buy")!;
-tymurBest.priceGnf = 8_625;
+tymurBest.priceGnf = 8_775;
 tymurBest.method = "mtn";
 tymurBest.minGnf = 500_000;
 tymurBest.maxGnf = 10_000_000;
@@ -137,7 +137,7 @@ export const orders: P2POrder[] = [
     traderId: "t1",
     side: "buy",
     amountGnf: 10_000_000,
-    priceGnf: 8_640,
+    priceGnf: 8_790,
     amountUsdt: 1_157.41,
     method: "orange",
     status: "payment_pending",
@@ -150,7 +150,7 @@ export const orders: P2POrder[] = [
     traderId: "t2",
     side: "buy",
     amountGnf: 5_000_000,
-    priceGnf: 8_625,
+    priceGnf: 8_775,
     amountUsdt: 579.71,
     method: "mtn",
     status: "completed",
@@ -163,7 +163,7 @@ export const orders: P2POrder[] = [
     traderId: "t8",
     side: "buy",
     amountGnf: 1_800_000,
-    priceGnf: 8_610,
+    priceGnf: 8_760,
     amountUsdt: 209.06,
     method: "wave",
     status: "completed",
@@ -176,7 +176,7 @@ export const orders: P2POrder[] = [
     traderId: "t4",
     side: "sell",
     amountGnf: 2_580_000,
-    priceGnf: 8_560,
+    priceGnf: 8_710,
     amountUsdt: 301.4,
     method: "cash",
     status: "completed",
@@ -189,7 +189,7 @@ export const orders: P2POrder[] = [
     traderId: "t3",
     side: "buy",
     amountGnf: 900_000,
-    priceGnf: 8_600,
+    priceGnf: 8_750,
     amountUsdt: 104.65,
     method: "orange",
     status: "cancelled",
@@ -202,7 +202,7 @@ export const orders: P2POrder[] = [
     traderId: "t12",
     side: "buy",
     amountGnf: 3_200_000,
-    priceGnf: 8_630,
+    priceGnf: 8_780,
     amountUsdt: 370.8,
     method: "mtn",
     status: "completed",
@@ -215,7 +215,7 @@ export const orders: P2POrder[] = [
     traderId: "t7",
     side: "sell",
     amountGnf: 4_250_000,
-    priceGnf: 8_540,
+    priceGnf: 8_690,
     amountUsdt: 497.66,
     method: "bank",
     status: "disputed",
@@ -228,7 +228,7 @@ export const orders: P2POrder[] = [
     traderId: "t2",
     side: "buy",
     amountGnf: 7_500_000,
-    priceGnf: 8_620,
+    priceGnf: 8_770,
     amountUsdt: 870.07,
     method: "bank",
     status: "completed",
@@ -241,7 +241,7 @@ export const orders: P2POrder[] = [
     traderId: "t16",
     side: "buy",
     amountGnf: 1_200_000,
-    priceGnf: 8_650,
+    priceGnf: 8_800,
     amountUsdt: 138.73,
     method: "orange",
     status: "completed",
@@ -254,7 +254,7 @@ export const orders: P2POrder[] = [
     traderId: "t1",
     side: "sell",
     amountGnf: 6_048_000,
-    priceGnf: 8_560,
+    priceGnf: 8_710,
     amountUsdt: 706.54,
     method: "bank",
     status: "completed",
@@ -267,7 +267,7 @@ export const orders: P2POrder[] = [
     traderId: "t10",
     side: "buy",
     amountGnf: 650_000,
-    priceGnf: 8_640,
+    priceGnf: 8_790,
     amountUsdt: 75.23,
     method: "wave",
     status: "completed",
@@ -280,7 +280,7 @@ export const orders: P2POrder[] = [
     traderId: "t20",
     side: "buy",
     amountGnf: 2_000_000,
-    priceGnf: 8_655,
+    priceGnf: 8_805,
     amountUsdt: 231.08,
     method: "mtn",
     status: "completed",
@@ -370,7 +370,7 @@ export const p2pThreads: {
         id: "pm31",
         threadId: "pth3",
         from: "provider",
-        text: "Je peux faire 8 605 GNF/USDT si vous prenez plus de 500 USDT via Wave.",
+        text: "Je peux faire 8 755 GNF/USDT si vous prenez plus de 500 USDT via Wave.",
         at: "19:12",
       },
     ],

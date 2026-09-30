@@ -30,14 +30,14 @@ import { classNames, formatGnf, formatNumber, parseAmount } from "@/lib/format";
 import { corridorOperators, payoutMethods } from "@/data/mock/diaspora";
 
 // ── Deterministic demo constants (démo — not live quotes) ─────────────
-// Route: EUR → USDT → GNF. 1 EUR ≈ 1.082 USDT (on-ramp),
-// 1 USDT ≈ 9 300 GNF (payout rate), 1.4% all-in fee.
-// For 500 €: fee 7 €, ≈ 541 USDT converted, recipient ≈ 4 961 000 GNF (≈ 4.96M).
-const EUR_TO_USDT = 1.082;
+// Route: EUR → USDT → GNF. 1 EUR ≈ 1.13 USDT (on-ramp),
+// 1 USDT ≈ 9 460 GNF (payout rate), 1.4% all-in fee.
+// For 500 €: fee 7 €, ≈ 557 USDT converted, recipient ≈ 5 270 000 GNF (≈ 5.27M).
+const EUR_TO_USDT = 1.13;
 /** Sender currencies (fiat first) → USDT on-ramp rate; EUR is the primary corridor. */
-const FROM_RATES: Record<string, number> = { EUR: 1.082, USD: 1.0, GBP: 1.27 };
+const FROM_RATES: Record<string, number> = { EUR: 1.13, USD: 1.0, GBP: 1.32 };
 const FROM_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
-const USDT_TO_GNF = 9300;
+const USDT_TO_GNF = 9460;
 const FEE_PCT = 1.4;
 const TRACKING_REF = "TRF-2026-0917";
 const TRACKING_URL = `https://nimba.money/suivi/${TRACKING_REF}`;
@@ -237,8 +237,8 @@ export default function DiasporaPage() {
                 </div>
                 <p className="mt-2 text-2xs text-ink-muted dark:text-[#8FA79C]">
                   {t(
-                    `1 ${sym} ≈ ${String(rateToUsdt).replace(".", ",")} USDT · 1 USDT ≈ 9 300 GNF (taux démo)`,
-                    `1 ${sym} ≈ ${rateToUsdt} USDT · 1 USDT ≈ 9,300 GNF (demo rates)`
+                    `1 ${sym} ≈ ${String(rateToUsdt).replace(".", ",")} USDT · 1 USDT ≈ 9 460 GNF (taux démo)`,
+                    `1 ${sym} ≈ ${rateToUsdt} USDT · 1 USDT ≈ 9,460 GNF (demo rates)`
                   )}
                 </p>
                 <dl className="mt-2 space-y-1 border-t border-line pt-2 text-xs dark:border-night-line">
