@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@page{size:A4;margin:0}*{box-sizing:border-box}
+body{margin:0;width:210mm;height:297mm;font:8.3pt/1.35 -apple-system,"Segoe UI",Inter,Helvetica,Arial,sans-serif;color:#10231e;background:#fff;overflow:hidden}
+header{background:linear-gradient(135deg,#063F35,#0b6b57 60%,#1d4ed8);color:#fff;padding:9mm 14mm 6mm}
+header h1{margin:0;font-size:21pt;letter-spacing:-.5px}header p{margin:2mm 0 0;opacity:.85;font-size:10pt}
+.tag{display:inline-block;background:rgba(255,255,255,.16);border-radius:20px;padding:1mm 3.5mm;font-size:8pt;margin-top:4mm;margin-right:2mm}
+main{padding:5mm 14mm 0;display:grid;grid-template-columns:1fr 1fr;gap:3.5mm}
+section{border:1px solid #dbe7e2;border-radius:9px;padding:3mm 4mm;background:#f8fcfa}
+section.wide{grid-column:span 2}section.blue{background:#f4f7ff;border-color:#d6e0fb}
+h2{margin:0 0 2mm;font-size:10.5pt;color:#063F35;display:flex;align-items:center;gap:2mm}
+h2 i{width:5mm;height:5mm;border-radius:50%;background:#0b6b57;color:#fff;font:700 8pt/5mm sans-serif;text-align:center}
+.blue h2{color:#1d3fa8}.blue h2 i{background:#1d4ed8}
+ul{margin:0;padding-left:4.2mm}li{margin:.6mm 0}
+code{background:#e6f2ee;border-radius:4px;padding:.2mm 1.4mm;font:8.2pt ui-monospace,Menlo,monospace;color:#063F35}
+pre{margin:1.5mm 0 0;background:#0d2a24;color:#bdf3df;border-radius:6px;padding:2.5mm 3mm;font:8pt/1.45 ui-monospace,Menlo,monospace}
+table{width:100%;border-collapse:collapse;font-size:8pt}td,th{padding:.8mm 1.5mm;border-bottom:1px solid #dbe7e2;text-align:left;vertical-align:top}th{color:#5b746c;font-weight:600}
+.warn{background:#fff7e6;border-color:#f4d99a}.warn h2{color:#8a5a00}.warn h2 i{background:#d98e04}
+footer{position:absolute;bottom:0;left:0;right:0;padding:4mm 14mm;font-size:8pt;color:#5b746c;display:flex;justify-content:space-between;border-top:1px solid #dbe7e2}
+</style></head><body>
+<header><h1>Nimba Money — Operations Guide</h1><p>Investor prototype · Next.js 14 · frontend-only, deterministic mock data</p>
+<span class="tag">P2P Exchange (green)</span><span class="tag">Marketplace (blue)</span><span class="tag">Guinea · GNF ↔ USDT</span></header>
+<main>
+<section class="warn wide"><h2><i>!</i>Site shows “This deployment is temporarily paused”</h2>
+This is a <b>Vercel account/project limit</b>, not a code bug (the app builds and all 41 routes return 200 locally). Fix: open Vercel → Project → Settings / Usage and resume or upgrade — <b>or</b> re-host in 5 min using the options below.</section>
+
+<section><h2><i>1</i>Re-host on Vercel (new project)</h2><ul>
+<li><code>vercel.com/new</code> → Import <code>molotroka123-cell/nimbamoney</code></li>
+<li>Framework: <b>Next.js</b> (auto) · no env vars required</li>
+<li>Deploy → open the new <code>*.vercel.app</code> URL</li>
+<li>Optional: <code>NEXT_PUBLIC_SITE_URL</code> = your final domain (link previews)</li></ul></section>
+
+<section><h2><i>2</i>Re-host on Netlify (backup)</h2><ul>
+<li><code>app.netlify.com</code> → Add site → Import from GitHub</li>
+<li>Repo has <code>netlify.toml</code> ready (Next.js plugin)</li>
+<li>Build <code>npm run build</code> · publish <code>.next</code></li>
+<li>Free plan is enough for a demo</li></ul></section>
+
+<section class="blue"><h2><i>3</i>Run locally / on a laptop</h2>
+<pre>npm install
+npm run dev      # http://localhost:3000
+npm run build && npm start</pre>Node 18.18+ required. Share from a laptop with any tunnel (e.g. <code>cloudflared tunnel --url localhost:3000</code>).</section>
+
+<section class="blue"><h2><i>4</i>Manage content</h2><table>
+<tr><th>Change</th><th>File</th></tr>
+<tr><td>Traders, offers, orders</td><td><code>data/mock/p2p.ts</code></td></tr>
+<tr><td>Providers & reviews</td><td><code>data/mock/providers.ts</code></td></tr>
+<tr><td>Rates, limits, branding</td><td><code>config/product.ts</code></td></tr>
+<tr><td>FR / EN texts</td><td><code>lib/i18n.tsx</code></td></tr></table></section>
+
+<section class="wide"><h2><i>5</i>Investor demo — 2 minute script</h2><table>
+<tr><th style="width:24%">Flow</th><th>Steps</th></tr>
+<tr><td><b>P2P</b> <code>/p2p</code></td><td>Open P2P → 10 M GNF → choose <b>Kaba Trade</b> → order room → pay → “J’ai payé” → USDT released → receipt</td></tr>
+<tr><td><b>Marketplace</b> <code>/marketplace</code></td><td>Compare <b>Kaba Trade</b> vs <b>Tymur MrSwap</b> → profile → verification & liquidity → request liquidity → live timeline</td></tr>
+<tr><td><b>Extras</b></td><td><code>/marketplace/map</code> cash points · <code>/marketplace/diaspora</code> transfers · <code>/kyc</code> levels · <code>/admin</code> & <code>/partner</code> back-offices · <code>/?tour=1</code> guided tour</td></tr></table></section>
+
+<section><h2><i>6</i>Before the meeting</h2><ul>
+<li>Open the link on phone <b>and</b> laptop 10 min earlier</li>
+<li>Keep a local <code>npm start</code> as a fallback</li>
+<li>Use a private tab: state is stored in the browser</li>
+<li>All data is mock — no real funds or claims</li></ul></section>
+
+<section><h2><i>7</i>Update & troubleshoot</h2><ul>
+<li>Push to the deployed branch → auto redeploy</li>
+<li>Blank/old page: hard refresh, check Deployments log</li>
+<li>Check code: <code>npm run typecheck</code>, <code>npm run build</code></li>
+<li>Legacy URLs <code>/find</code>, <code>/providers</code> redirect automatically</li></ul></section>
+</main>
+<footer><span>Nimba Money · Operations Guide</span><span>github.com/molotroka123-cell/nimbamoney</span></footer>
+</body></html>

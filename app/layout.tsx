@@ -6,7 +6,12 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 import { Providers } from "@/components/layout/Providers";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nimba-money.vercel.app"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.URL ?? "http://localhost:3000"),
+  ),
   title: {
     default: "Nimba Money — P2P Exchange & Marketplace vérifié en Guinée",
     template: "%s · Nimba Money",
