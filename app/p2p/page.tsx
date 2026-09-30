@@ -35,7 +35,8 @@ import {
   parseAmount,
 } from "@/lib/format";
 import { railLabel, RailChip } from "@/lib/rails";
-import { supportWhatsApp, demoAssets, assetInfo, type P2PMethodId, type DemoAssetId } from "@/config/product";
+import { CurrencySwipe } from "@/components/ui/CurrencySwipe";
+import { supportWhatsApp, assetInfo, type P2PMethodId, type DemoAssetId } from "@/config/product";
 import type { P2POffer } from "@/types";
 import { Info } from "lucide-react";
 
@@ -74,7 +75,7 @@ function P2PInner() {
   const [side, setSide] = useState<Side>((sp.get("side") as Side) || "buy");
   const [amount, setAmount] = useState("10 000 000");
   const [method, setMethod] = useState<P2PMethodId | "all">("all");
-  const [asset, setAsset] = useState<DemoAssetId>("USDT");
+  const [asset, setAsset] = useState<DemoAssetId>("USD");
   const [qf, setQf] = useState<QF>("best_match");
   const [loading, setLoading] = useState(false);
   const [drawer, setDrawer] = useState(false);
@@ -292,19 +293,14 @@ function P2PInner() {
                   <span className="min-w-0 truncate text-sm font-extrabold tabular-nums text-brand-700 dark:text-brand-300">
                     {fmtAsset(receiveAsset)}
                   </span>
-                  <select
-                    aria-label={t("Actif reçu", "Asset received")}
-                    className="shrink-0 rounded-md border border-line bg-white px-1.5 py-1.5 text-xs font-bold dark:border-night-lineStrong dark:bg-night-card"
-                    value={asset}
-                    onChange={(e) => setAsset(e.target.value as DemoAssetId)}
-                  >
-                    {demoAssets.map((x) => (
-                      <option key={x.id} value={x.id}>
-                        {x.id}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="shrink-0 rounded-md bg-brand-50 px-2 py-1.5 text-xs font-extrabold text-brand-700 dark:bg-brand-900/60 dark:text-brand-300">{asset}</span>
                 </div>
+                <CurrencySwipe
+                  className="mt-2"
+                  value={asset}
+                  onChange={(v) => setAsset(v as DemoAssetId)}
+                  label={t("Devise reçue", "Currency")}
+                />
                 <p className="mt-1 flex items-center gap-1.5 text-2xs text-ink-muted dark:text-[#8FA79C]">
                   <span className="relative flex h-1.5 w-1.5" aria-hidden>
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />

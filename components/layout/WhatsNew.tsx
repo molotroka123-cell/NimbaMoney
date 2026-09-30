@@ -20,6 +20,7 @@ import {
   Timer,
   Link2,
   ShieldCheck,
+  Coins,
 } from "lucide-react";
 import { classNames } from "@/lib/format";
 
@@ -29,6 +30,12 @@ const KEY = "nimba.whatsnew.v4";
 type Slide = { Icon: typeof Sparkles; title: string; text: string; href?: string; soon?: boolean };
 
 const slides: Slide[] = [
+  {
+    Icon: Coins,
+    title: "USD · EUR · GBP first",
+    text: "Trade, send and import in dollars, euros or pounds — swipe to switch currency. Crypto (USDT, USDC, BTC) is now just one option.",
+    href: "/p2p",
+  },
   {
     Icon: Briefcase,
     title: "Import FX for Business",

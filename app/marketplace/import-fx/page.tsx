@@ -9,6 +9,7 @@
  * Everything simulated here is labeled "(démo)".
  */
 
+import { CurrencySwipe } from "@/components/ui/CurrencySwipe";
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -93,9 +94,8 @@ type Rail = "usdt" | "bank" | "cash";
 
 /* ── Small helpers ─────────────────────────────────────────────────── */
 
-function formatUsd(n: number): string {
-  return `${formatNumber(n)} USD`;
-}
+/** Demo multipliers vs USD for the selectable import currencies. */
+const CUR_MUL: Record<string, number> = { USD: 1, EUR: 1.0815, GBP: 1.269 };
 
 /* ── Page ──────────────────────────────────────────────────────────── */
 
@@ -105,6 +105,9 @@ export default function ImportFxPage() {
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [amountRaw, setAmountRaw] = useState(formatNumber(DEFAULT_AMOUNT_USD));
+  const [cur, setCur] = useState("USD");
+  const rate = Math.round(DEMO_RATE_GNF_PER_USD * (CUR_MUL[cur] ?? 1));
+  const formatUsd = (n: number) => `${formatNumber(n)} ${cur}`;
   const [purpose, setPurpose] = useState<Purpose>("electronics");
   const [invoiceAttached, setInvoiceAttached] = useState(false);
   const [rail, setRail] = useState<Rail>("usdt");
@@ -128,9 +131,9 @@ export default function ImportFxPage() {
 
   const split = useMemo(() => buildSplit(amountUsd), [amountUsd]);
   const feeGnf = (tr: Tranche) =>
-    Math.round(tr.amountUsd * DEMO_RATE_GNF_PER_USD * (tr.feePct / 100));
+    Math.round(tr.amountUsd * rate * (tr.feePct / 100));
   const totalFeesGnf = split.reduce((s, tr) => s + feeGnf(tr), 0);
-  const baseGnf = amountUsd * DEMO_RATE_GNF_PER_USD;
+  const baseGnf = amountUsd * rate;
   const totalCostGnf = baseGnf + totalFeesGnf;
   const effectiveRate = amountUsd > 0 ? Math.round(totalCostGnf / amountUsd) : 0;
 
@@ -231,7 +234,7 @@ export default function ImportFxPage() {
 
       {/* ── Wizard / success ── */}
       {submitted ? (
-        <SuccessCard onReset={reset} split={split} />
+        <SuccessCard onReset={reset} split={split} cur={cur} />
       ) : (
         <Card className="card-pad">
           {/* Stepper */}
@@ -294,7 +297,7 @@ export default function ImportFxPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block">
                   <span className="mb-1 block text-xs font-semibold">
-                    {t("Montant (USD)", "Amount (USD)")}
+                    {t(`Montant (${cur})`, `Amount (${cur})`)}
                   </span>
                   <div className="relative">
                     <input
@@ -303,12 +306,19 @@ export default function ImportFxPage() {
                       value={amountRaw}
                       onChange={(e) => setAmountRaw(formatAmountInput(e.target.value))}
                       placeholder="35 000"
-                      aria-label={t("Montant en USD", "Amount in USD")}
+                      aria-label={t(`Montant en ${cur}`, `Amount in ${cur}`)}
                     />
                     <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs font-bold text-ink-muted dark:text-[#8FA79C]">
-                      USD
+                      {cur}
                     </span>
                   </div>
+                  <CurrencySwipe
+                    className="mt-2"
+                    value={cur}
+                    onChange={setCur}
+                    options={["USD", "EUR", "GBP"]}
+                    label={t("Devise", "Currency")}
+                  />
                 </label>
                 <label className="block">
                   <span className="mb-1 block text-xs font-semibold">
@@ -477,7 +487,7 @@ export default function ImportFxPage() {
                       {t("Taux de base (démo)", "Base rate (demo)")}
                     </dt>
                     <dd className="font-semibold tabular-nums">
-                      {formatNumber(DEMO_RATE_GNF_PER_USD)} GNF/USD
+                      {formatNumber(rate)} GNF/{cur}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
@@ -491,7 +501,7 @@ export default function ImportFxPage() {
                       {t("Taux effectif", "Effective rate")}
                     </dt>
                     <dd className="font-semibold tabular-nums">
-                      ≈ {formatNumber(effectiveRate)} GNF/USD
+                      ≈ {formatNumber(effectiveRate)} GNF/{cur}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-mkt-500/20 pt-1.5">
@@ -555,7 +565,7 @@ export default function ImportFxPage() {
                       },
                       {
                         label: t("Taux effectif", "Effective rate"),
-                        value: `≈ ${formatNumber(effectiveRate)} GNF/USD`,
+                        value: `≈ ${formatNumber(effectiveRate)} GNF/${cur}`,
                       },
                       {
                         label: t("Coût total estimé", "Estimated total cost"),
@@ -662,7 +672,7 @@ export default function ImportFxPage() {
 
 /* ── Success state ─────────────────────────────────────────────────── */
 
-function SuccessCard({ onReset, split }: { onReset: () => void; split: Tranche[] }) {
+function SuccessCard({ onReset, split, cur }: { onReset: () => void; split: Tranche[]; cur: string }) {
   const { t } = useI18n();
   const { toast } = useToast();
 
@@ -680,8 +690,8 @@ function SuccessCard({ onReset, split }: { onReset: () => void; split: Tranche[]
         },
         {
           label: t(
-            `Tranche 1 réglée — ${formatNumber(tr.amountUsd)} USD`,
-            `Tranche 1 settled — ${formatNumber(tr.amountUsd)} USD`
+            `Tranche 1 réglée — ${formatNumber(tr.amountUsd)} ${cur}`,
+            `Tranche 1 settled — ${formatNumber(tr.amountUsd)} ${cur}`
           ),
           state: "done",
         }
@@ -691,8 +701,8 @@ function SuccessCard({ onReset, split }: { onReset: () => void; split: Tranche[]
         { label: t(`${tr.name} a accepté`, `${tr.name} accepted`), state: "current" },
         {
           label: t(
-            `Tranche ${i + 1} en cours — ${formatNumber(tr.amountUsd)} USD…`,
-            `Tranche ${i + 1} in progress — ${formatNumber(tr.amountUsd)} USD…`
+            `Tranche ${i + 1} en cours — ${formatNumber(tr.amountUsd)} ${cur}…`,
+            `Tranche ${i + 1} in progress — ${formatNumber(tr.amountUsd)} ${cur}…`
           ),
           state: "pending",
         }

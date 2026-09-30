@@ -400,6 +400,9 @@ export const p2pAnnouncements = [
 
 export const wallets = [
   { asset: "GNF", balance: 12_450_000, pending: 0 },
+  { asset: "USD", balance: 2_450.0, pending: 0 },
+  { asset: "EUR", balance: 860.4, pending: 0 },
+  { asset: "GBP", balance: 310.25, pending: 0 },
   { asset: "USDT", balance: 1_284.52, pending: 0 },
 ];
 

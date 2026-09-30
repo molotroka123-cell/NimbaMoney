@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { CurrencySwipe } from "@/components/ui/CurrencySwipe";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -33,6 +34,9 @@ import { corridorOperators, payoutMethods } from "@/data/mock/diaspora";
 // 1 USDT ≈ 9 300 GNF (payout rate), 1.4% all-in fee.
 // For 500 €: fee 7 €, ≈ 541 USDT converted, recipient ≈ 4 961 000 GNF (≈ 4.96M).
 const EUR_TO_USDT = 1.082;
+/** Sender currencies (fiat first) → USDT on-ramp rate; EUR is the primary corridor. */
+const FROM_RATES: Record<string, number> = { EUR: 1.082, USD: 1.0, GBP: 1.27 };
+const FROM_SYMBOL: Record<string, string> = { EUR: "€", USD: "$", GBP: "£" };
 const USDT_TO_GNF = 9300;
 const FEE_PCT = 1.4;
 const TRACKING_REF = "TRF-2026-0917";
@@ -46,6 +50,9 @@ export default function DiasporaPage() {
 
   // Form state
   const [amountRaw, setAmountRaw] = useState("500");
+  const [cur, setCur] = useState("EUR");
+  const rateToUsdt = FROM_RATES[cur] ?? EUR_TO_USDT;
+  const sym = FROM_SYMBOL[cur] ?? "€";
   const [recipientName, setRecipientName] = useState("Aïssatou Diallo");
   const [payoutId, setPayoutId] = useState("orange");
   const [phone, setPhone] = useState("+224 620 00 00 00");
@@ -70,15 +77,15 @@ export default function DiasporaPage() {
   const fmtEur = (n: number) =>
     `${new Intl.NumberFormat(lang === "fr" ? "fr-FR" : "en-US", {
       maximumFractionDigits: 2,
-    }).format(n)} €`;
+    }).format(n)} ${sym}`;
 
   const amountEur = parseAmount(amountRaw);
   const feeEur = Math.round(amountEur * FEE_PCT) / 100; // 1.4% → 7 € for 500 €
   const netEur = Math.max(0, amountEur - feeEur);
   // net of fees, so the timeline reconciles with the payout amount
-  const usdtGross = Math.round(netEur * EUR_TO_USDT); // ≈ 533 USDT for 500 €
+  const usdtGross = Math.round(netEur * rateToUsdt); // ≈ 533 USDT for 500 €
   const recipientGnf =
-    Math.round((netEur * EUR_TO_USDT * USDT_TO_GNF) / 1000) * 1000;
+    Math.round((netEur * rateToUsdt * USDT_TO_GNF) / 1000) * 1000;
 
   const payout = payoutMethods.find((m) => m.id === payoutId) ?? payoutMethods[0];
   const payoutLabel = lang === "fr" ? payout.labelFr : payout.labelEn;
@@ -101,7 +108,7 @@ export default function DiasporaPage() {
     Icon: typeof Euro;
   }[] = [
     {
-      label: t("Paiement EUR reçu", "EUR payment received"),
+      label: t(`Paiement ${cur} reçu`, `${cur} payment received`),
       sub: fmtEur(amountEur),
       Icon: Euro,
     },
@@ -180,7 +187,7 @@ export default function DiasporaPage() {
             >
               <div>
                 <label htmlFor="dia-amount" className="label-xs">
-                  {t("Montant à envoyer (EUR)", "Amount to send (EUR)")}
+                  {t(`Montant à envoyer (${cur})`, `Amount to send (${cur})`)}
                 </label>
                 <div className="relative">
                   <input
@@ -192,16 +199,23 @@ export default function DiasporaPage() {
                     placeholder="500"
                   />
                   <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink-muted dark:text-[#8FA79C]">
-                    €
+                    {sym}
                   </span>
                 </div>
+                <CurrencySwipe
+                  className="mt-2"
+                  value={cur}
+                  onChange={setCur}
+                  options={["EUR", "USD", "GBP"]}
+                  label={t("Devise d'envoi", "Sending currency")}
+                />
               </div>
 
               {/* Route chain EUR → USDT → GNF */}
               <div className="rounded-xl border border-line bg-surface-sunken/60 p-3 dark:border-night-line dark:bg-night-raised/60">
                 <div className="flex items-center justify-between gap-1">
                   {[
-                    { Icon: Euro, label: "EUR" },
+                    { Icon: Euro, label: cur },
                     { Icon: Coins, label: "USDT" },
                     { Icon: Smartphone, label: "GNF" },
                   ].map((s, i) => (
@@ -223,8 +237,8 @@ export default function DiasporaPage() {
                 </div>
                 <p className="mt-2 text-2xs text-ink-muted dark:text-[#8FA79C]">
                   {t(
-                    "1 € ≈ 1,082 USDT · 1 USDT ≈ 9 300 GNF (taux démo)",
-                    "1 € ≈ 1.082 USDT · 1 USDT ≈ 9,300 GNF (demo rates)"
+                    `1 ${sym} ≈ ${String(rateToUsdt).replace(".", ",")} USDT · 1 USDT ≈ 9 300 GNF (taux démo)`,
+                    `1 ${sym} ≈ ${rateToUsdt} USDT · 1 USDT ≈ 9,300 GNF (demo rates)`
                   )}
                 </p>
                 <dl className="mt-2 space-y-1 border-t border-line pt-2 text-xs dark:border-night-line">

@@ -39,14 +39,17 @@ export type P2PMethodId = RailId | "wave";
 export const demoUsdtRateGnf = 8_640;
 
 /**
- * Crypto assets available in the P2P demo. USDT offers are the native
+ * Currencies available in the P2P demo: fiat first (USD, EUR, GBP), crypto as an option. USDT offers are the native
  * mock data; other assets reuse the same offers through a deterministic
  * price multiplier — investor-prototype behavior only.
  */
 export const demoAssets = [
-  { id: "USDT", mul: 1, decimals: 2, network: "Tether · TRC20" },
-  { id: "USDC", mul: 0.9986, decimals: 2, network: "USD Coin · TRC20" },
-  { id: "BTC", mul: 115_180, decimals: 6, network: "Bitcoin" },
+  { id: "USD", kind: "fiat", symbol: "$", flag: "🇺🇸", mul: 0.9995, decimals: 2, network: "US Dollar · cash / bank" },
+  { id: "EUR", kind: "fiat", symbol: "€", flag: "🇪🇺", mul: 1.0815, decimals: 2, network: "Euro · cash / bank" },
+  { id: "GBP", kind: "fiat", symbol: "£", flag: "🇬🇧", mul: 1.2690, decimals: 2, network: "Pound sterling · cash / bank" },
+  { id: "USDT", kind: "crypto", symbol: "₮", flag: "", mul: 1, decimals: 2, network: "Tether · TRC20" },
+  { id: "USDC", kind: "crypto", symbol: "$", flag: "", mul: 0.9986, decimals: 2, network: "USD Coin · TRC20" },
+  { id: "BTC", kind: "crypto", symbol: "₿", flag: "", mul: 115_180, decimals: 6, network: "Bitcoin" },
 ] as const;
 
 export type DemoAssetId = (typeof demoAssets)[number]["id"];

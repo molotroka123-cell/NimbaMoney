@@ -64,7 +64,7 @@ export default function WalletsPage() {
                 <p className="text-lg font-extrabold tabular-nums">
                   {w.asset === "GNF"
                     ? `${formatNumber(w.balance)} GNF`
-                    : `${w.balance.toLocaleString("fr-FR")} USDT`}
+                    : `${w.balance.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} ${w.asset}`}
                 </p>
               </div>
             </div>
