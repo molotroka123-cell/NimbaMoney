@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Clock, DollarSign, MapPin, Navigation, Zap } from "lucide-react";
 import { Card, Avatar } from "@/components/ui/misc";
@@ -84,6 +84,16 @@ export default function CashPointsMapPage() {
   const [usdOnly, setUsdOnly] = useState(false);
   const [district, setDistrict] = useState<string>("all");
   const detailRef = useRef<HTMLDivElement>(null);
+  // live liquidity: a deterministic ±jitter tick so the map feels alive (demo)
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((n) => n + 1), 2500);
+    return () => clearInterval(id);
+  }, []);
+  const liveUsd = (p: Provider, seed: number) => {
+    const base = p.liquidity.totalAvailableGnf / 8640;
+    return Math.round(base * (1 + 0.04 * Math.sin(tick * 1.3 + seed)) / 100) * 100;
+  };
 
   const allPoints: MapPoint[] = useMemo(
     () =>
@@ -184,6 +194,53 @@ export default function CashPointsMapPage() {
           )}
         </span>
       </div>
+
+      {/* ── Live liquidity ─────────────────────────────────────────── */}
+      <Card className="card-pad">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="flex items-center gap-2 text-sm font-bold">
+            <span className="relative flex h-2 w-2" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            {t("Liquidité en direct", "Live liquidity")}
+          </h2>
+          <span className="text-2xs text-ink-muted dark:text-[#8FA79C]">
+            {t("USD disponibles · actualisé toutes les 2,5 s (démo)", "USD available · refreshes every 2.5s (demo)")}
+          </span>
+        </div>
+        <ul className="mt-3 grid gap-x-6 gap-y-2 sm:grid-cols-2">
+          {[...filtered]
+            .sort((a, b) => b.provider.liquidity.totalAvailableGnf - a.provider.liquidity.totalAvailableGnf)
+            .slice(0, 6)
+            .map((mp, i) => {
+              const max = Math.max(...filtered.map((x) => x.provider.liquidity.totalAvailableGnf), 1);
+              const pct = Math.max(6, Math.round((liveUsd(mp.provider, i) * 8640 * 100) / (max * 1.05)));
+              return (
+                <li key={mp.provider.id}>
+                  <button
+                    type="button"
+                    onClick={() => select(mp.provider.id, true)}
+                    className="block w-full text-left"
+                  >
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="truncate">{mp.provider.name}</span>
+                      <span className="tabular-nums text-mkt-600 dark:text-mkt-300">
+                        ${liveUsd(mp.provider, i).toLocaleString("en-US")}
+                      </span>
+                    </div>
+                    <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-sunken dark:bg-night-raised">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-mkt-400 to-mkt-600 transition-[width] duration-[1800ms] ease-out"
+                        style={{ width: `${Math.min(100, pct)}%` }}
+                      />
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
+        </ul>
+      </Card>
 
       {/* ── Map + detail ───────────────────────────────────────────── */}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -296,6 +353,14 @@ export default function CashPointsMapPage() {
                   transform={`translate(${point.x} ${point.y})${isSel ? " scale(1.3)" : ""}`}
                   className="cursor-pointer outline-none"
                 >
+                  {provider.status === "open" && (
+                    <circle
+                      r={10 + Math.min(14, provider.liquidity.totalAvailableGnf / 8640 / 12_000)}
+                      className="animate-ping fill-emerald-400/25"
+                      style={{ transformBox: "fill-box", transformOrigin: "center", animationDuration: "2.6s" }}
+                      aria-hidden
+                    />
+                  )}
                   {isSel && (
                     <circle
                       r={17}

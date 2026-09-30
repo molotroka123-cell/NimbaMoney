@@ -2,6 +2,7 @@
 
 import React from "react";
 import {
+  Link2,
   Home,
   ArrowLeftRight,
   TrendingUp,
@@ -32,6 +33,7 @@ const sections: NavSection[] = [
       { href: "/p2p/orders", labelFr: "Ordres", labelEn: "Orders", icon: FileText },
       { href: "/p2p/wallets", labelFr: "Portefeuilles", labelEn: "Wallets", icon: Wallet },
       { href: "/p2p/pay", labelFr: "Payer (QR)", labelEn: "Pay (QR)", icon: QrCode },
+      { href: "/p2p/links", labelFr: "Liens de paiement", labelEn: "Payment links", icon: Link2 },
       { href: "/p2p/messages", labelFr: "Messages", labelEn: "Messages", icon: MessageSquare, badge: unread },
       { href: "/p2p/disputes", labelFr: "Arbitrage", labelEn: "Arbitration", icon: AlertTriangle },
       { href: "/referral", labelFr: "Parrainage", labelEn: "Referral", icon: Gift },

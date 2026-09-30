@@ -129,7 +129,7 @@ export function ProductShell({
             <GlobalSearch />
             <Notifications />
             <span
-              className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-2xs font-bold text-amber-800 sm:hidden dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300"
+              className="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-2xs font-bold text-amber-800 max-[430px]:hidden sm:hidden dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-300"
               title="Investor demo"
             >
               {t("Démo", "Demo")}

@@ -68,6 +68,7 @@ export function GlobalSearch() {
       { id: "pg11", label: t("Payer un commerçant (QR)", "Pay a merchant (QR)"), sub: "/p2p/pay", href: "/p2p/pay", kind: "page" },
       { id: "pg12", label: t("Parrainage", "Referral"), sub: "/referral", href: "/referral", kind: "page" },
       { id: "pg13", label: t("Coffre USD", "USD Vault"), sub: "/p2p/wallets", href: "/p2p/wallets", kind: "page" },
+      { id: "pg15", label: t("Liens de paiement", "Payment links"), sub: "/p2p/links", href: "/p2p/links", kind: "page" },
       { id: "pg14", label: t("Centre d'arbitrage", "Arbitration center"), sub: "/p2p/disputes", href: "/p2p/disputes", kind: "page" },
     ],
     [t]

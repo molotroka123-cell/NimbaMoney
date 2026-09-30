@@ -47,7 +47,7 @@ export function CurrencySwipe({ value, onChange, options, label, className }: Pr
       aria-label={label}
       onKeyDown={onKey}
       className={classNames(
-        "-mx-1 flex snap-x snap-mandatory gap-1.5 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "flex w-0 min-w-full snap-x snap-mandatory gap-1.5 overflow-x-auto px-0.5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className
       )}
     >

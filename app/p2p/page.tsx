@@ -283,7 +283,7 @@ function P2PInner() {
                 </p>
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <label className="label-xs">
                   {side === "buy"
                     ? t("Vous recevez (approx.)", "You receive (approx.)")

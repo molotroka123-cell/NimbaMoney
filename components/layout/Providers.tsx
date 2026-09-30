@@ -7,6 +7,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { DesktopModeSwitch } from "@/components/layout/DesktopModeSwitch";
 import { DemoTour } from "@/components/demo/DemoTour";
 import { AccessGate } from "@/components/layout/AccessGate";
+import { DealStory } from "@/components/demo/DealStory";
 import { WhatsNew } from "@/components/layout/WhatsNew";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -18,6 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <DesktopModeSwitch />
           <DemoTour />
           <WhatsNew />
+          <DealStory />
           <AccessGate />
         </ToastProvider>
       </I18nProvider>

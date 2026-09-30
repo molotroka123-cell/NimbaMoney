@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Card, Avatar, EmptyState } from "@/components/ui/misc";
 import { Button } from "@/components/ui/Button";
+import { TrustScoreCard } from "@/components/ui/TrustScore";
 import {
   VerificationBadge,
   TierBadge,
@@ -377,6 +378,8 @@ export default function ProviderProfilePage() {
               {t("Comment Nimba vérifie les partenaires →", "How Nimba verifies providers →")}
             </Link>
           </Card>
+
+          <TrustScoreCard provider={p} />
 
           <Card className="card-pad">
             <h2 className="text-sm font-bold">{t("Chiffres clés", "Key numbers")}</h2>

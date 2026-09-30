@@ -1,5 +1,6 @@
 "use client";
 
+import { TrustBadge } from "@/components/ui/TrustScore";
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { MapPin, Clock, ArrowRight } from "lucide-react";
@@ -303,6 +304,7 @@ function ProviderDirectoryCard({
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
               <VerificationBadge type={p.type} level={p.verification.level} compact />
               <Rating value={p.rating} compact />
+              <TrustBadge provider={p} />
               <span className="text-2xs text-ink-muted dark:text-[#8FA79C]">
                 {p.completedDeals.toLocaleString("fr-FR")}{" "}
                 {t("transactions", "matched deals")} · {p.monthsOnNimba}{" "}
