@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play, RotateCcw, Sparkles, X } from "lucide-react";
+import { Pause, Play, RotateCcw, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { scheduleScore } from "@/lib/dealScore";
 import { useI18n } from "@/lib/i18n";
 import { classNames } from "@/lib/format";
 
@@ -13,6 +14,7 @@ import { classNames } from "@/lib/format";
 const DURATION = 20;
 const OPEN_EVENT = "nimba:open-deal";
 const HIDE_KEY = "nimba.dealstory.hidden";
+const SOUND_KEY = "nimba.dealstory.sound";
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 /** progress of the window [a,b] at time t, eased */
@@ -208,6 +210,71 @@ export function DealStoryPlayer({ onClose }: { onClose: () => void }) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(true);
   const last = useRef<number | null>(null);
+  const [sound, setSound] = useState(true);
+  const [epoch, setEpoch] = useState(0); // bumps on seek → audio re-syncs
+  const timeRef = useRef(0);
+  timeRef.current = time;
+  const audio = useRef<{ ctx: AudioContext; master: GainNode } | null>(null);
+  const ctxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(SOUND_KEY) === "0") setSound(false);
+    } catch { /* ignore */ }
+  }, []);
+
+  // music: (re)start from the current playhead whenever playback/seek/mute changes
+  useEffect(() => {
+    const stop = () => {
+      const a = audio.current;
+      audio.current = null;
+      if (!a) return;
+      try {
+        a.master.gain.cancelScheduledValues(a.ctx.currentTime);
+        a.master.gain.setTargetAtTime(0, a.ctx.currentTime, 0.03);
+        setTimeout(() => a.master.disconnect(), 250);
+      } catch { /* ignore */ }
+    };
+    if (!playing || !sound || timeRef.current >= DURATION) {
+      stop();
+      return stop;
+    }
+    try {
+      const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const ctx = ctxRef.current ?? (ctxRef.current = new AC());
+      void ctx.resume();
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(0.55, ctx.currentTime + 0.12);
+      const comp = ctx.createDynamicsCompressor();
+      master.connect(comp).connect(ctx.destination);
+      const from = timeRef.current;
+      scheduleScore(ctx, master, ctx.currentTime + 0.05, from);
+      master.gain.setValueAtTime(0.55, ctx.currentTime + 0.05 + (DURATION - 1.2 - from));
+      master.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.05 + (DURATION - from));
+      audio.current = { ctx, master };
+    } catch { /* audio unavailable — animation still plays */ }
+    return stop;
+  }, [playing, sound, epoch]);
+
+  useEffect(() => () => {
+    ctxRef.current?.close().catch(() => undefined);
+    ctxRef.current = null;
+  }, []);
+
+  const toggleSound = () => {
+    setSound((v) => {
+      try {
+        window.localStorage.setItem(SOUND_KEY, v ? "0" : "1");
+      } catch { /* ignore */ }
+      return !v;
+    });
+  };
+  const seek = (v: number) => {
+    setTime(v);
+    timeRef.current = v;
+    setEpoch((n) => n + 1);
+  };
 
   useEffect(() => {
     try {
@@ -254,7 +321,7 @@ export function DealStoryPlayer({ onClose }: { onClose: () => void }) {
   const cap = CAPTIONS.find((c) => time < c.until) ?? CAPTIONS[CAPTIONS.length - 1];
   const stepIdx = STEPS.reduce((acc, s, i) => (time >= s.at ? i : acc), 0);
   const replay = () => {
-    setTime(0);
+    seek(0);
     setPlaying(true);
   };
 
@@ -266,9 +333,19 @@ export function DealStoryPlayer({ onClose }: { onClose: () => void }) {
             <Sparkles className="h-4 w-4" aria-hidden />
             {tr("Une transaction en 20 secondes", "A deal in 20 seconds")}
           </p>
-          <button onClick={onClose} aria-label={tr("Fermer", "Close")} className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleSound}
+              aria-pressed={sound}
+              aria-label={sound ? tr("Couper le son", "Mute") : tr("Activer le son", "Unmute")}
+              className="rounded-lg p-1.5 text-white/70 hover:bg-white/10 hover:text-white"
+            >
+              {sound ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+            </button>
+            <button onClick={onClose} aria-label={tr("Fermer", "Close")} className="rounded-lg p-1.5 text-white/60 hover:bg-white/10 hover:text-white">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         <div className="px-2 sm:px-4">
@@ -285,7 +362,7 @@ export function DealStoryPlayer({ onClose }: { onClose: () => void }) {
               <button
                 key={s.en}
                 type="button"
-                onClick={() => setTime(s.at + 0.01)}
+                onClick={() => seek(s.at + 0.01)}
                 className={classNames("min-w-0 flex-1 text-left", i > stepIdx && "opacity-45")}
                 aria-label={lang === "fr" ? s.fr : s.en}
               >

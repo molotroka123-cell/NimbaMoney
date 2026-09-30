@@ -125,7 +125,7 @@ export function ProductShell({
 
           {switcher}
 
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ml-auto flex items-center gap-1.5 max-[430px]:gap-0.5">
             <GlobalSearch />
             <Notifications />
             <span
@@ -223,7 +223,7 @@ export function ProductSwitcher({ current }: { current: "p2p" | "marketplace" })
       <Link href="/marketplace" title={t("Besoin d'un échangeur vérifié ?", "Need a verified exchanger?")}>
         <Button variant="blueSecondary" size="sm">
           Marketplace
-          <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+          <ArrowRight className="h-3.5 w-3.5 max-[430px]:hidden" aria-hidden />
         </Button>
       </Link>
     );
@@ -236,7 +236,7 @@ export function ProductSwitcher({ current }: { current: "p2p" | "marketplace" })
         className="!text-brand-700 dark:!text-brand-300"
       >
         P2P
-        <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+        <ArrowRight className="h-3.5 w-3.5 max-[430px]:hidden" aria-hidden />
       </Button>
     </Link>
   );

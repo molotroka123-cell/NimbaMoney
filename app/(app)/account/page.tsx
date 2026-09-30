@@ -18,7 +18,7 @@ export default function AccountOverviewPage() {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard label={t("Demandes actives", "Active requests")} value="1" />
         <StatsCard
           label={t("Transactions terminées", "Completed deals")}
@@ -35,7 +35,7 @@ export default function AccountOverviewPage() {
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="card-pad">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold">{t("Demandes récentes", "Recent requests")}</h2>

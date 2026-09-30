@@ -109,7 +109,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
             <Pill tone="green">{t("En ligne", "Online")}</Pill>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <Link href="/marketplace/providers/kaba-trade">
+            <Link href="/marketplace/providers/kaba-trade" className="max-sm:hidden">
               <Button variant="secondary" size="sm">
                 {t("Voir mon profil public", "View public profile")}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden />

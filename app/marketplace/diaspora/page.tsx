@@ -170,7 +170,7 @@ export default function DiasporaPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
         {/* ── Left: send form / tracking ── */}
         {phase === "form" ? (
           <Card className="card-pad self-start">
