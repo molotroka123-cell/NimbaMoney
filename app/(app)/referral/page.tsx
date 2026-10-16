@@ -24,7 +24,8 @@ import { useI18n } from "@/lib/i18n";
 import { formatGnf, formatNumber, classNames } from "@/lib/format";
 
 const REFERRAL_CODE = "NIMBA-MD24";
-const REFERRAL_LINK = `https://nimba-money.vercel.app/?ref=${REFERRAL_CODE}`;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://nimba-money.vercel.app";
+const REFERRAL_LINK = `${SITE_URL}/?ref=${REFERRAL_CODE}`;
 
 interface Invitee {
   name: string;

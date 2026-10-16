@@ -45,6 +45,20 @@ npm run build  # 41 routes, production build
 
 Deployable to Vercel as-is (no backend, no env vars needed).
 
+### GitHub Pages (free)
+
+`.github/workflows/pages.yml` builds a static export and publishes it on every
+push to `claude/nimba-money-frontend-nce7u6`, at
+`https://<owner>.github.io/<repo>/`. One-time setup: **Settings → Pages →
+Source: GitHub Actions**. Local equivalent:
+
+```bash
+STATIC_EXPORT=1 NEXT_PUBLIC_BASE_PATH=/NimbaMoney npm run build  # → out/
+```
+
+The legacy redirects (`/find`, `/providers`, `/requests`) only work on
+Vercel/Netlify; static hosting has no server to redirect.
+
 ## Structure
 
 ```

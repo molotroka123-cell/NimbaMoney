@@ -20,7 +20,7 @@ const seed: Link[] = [
 
 function payUrl(l: Pick<Link, "amount" | "cur" | "desc">, origin: string) {
   const q = new URLSearchParams({ a: String(l.amount), c: l.cur, d: l.desc, m: "Kaba Trade" });
-  return `${origin}/pay?${q.toString()}`;
+  return `${origin}${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/pay?${q.toString()}`;
 }
 
 export default function PaymentLinksPage() {
